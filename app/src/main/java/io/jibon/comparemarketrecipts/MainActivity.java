@@ -7,14 +7,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.SurfaceControl;
+import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private Activity activity;
-    int rand = (int) Math.ceil((Math.random()*(999999-100000))+100000);
+    int rand = (int) Math.ceil((Math.random() * (999999 - 100000)) + 100000);
     TextView splash_text;
     String[] permissions = {
             Manifest.permission.CAMERA,
@@ -50,15 +51,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void run(){
+    public void run() {
         Intent intent = new Intent(activity, Home.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        if (hasPermission(this, permissions)){
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            Toast.makeText(activity, "Long: "+longitude+"\nLat: "+latitude, Toast.LENGTH_LONG).show();
+        if (hasPermission(this, permissions)) {
+//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//            @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//
+//
+//            if (location != null){
+//                double longitude = location.getLongitude();
+//                double latitude = location.getLatitude();
+//
+//                try {
+//                    Address geocoder = new Geocoder(activity).getFromLocation(latitude, longitude, 1).get(0);
+//                    Log.e("errnos", String.valueOf(geocoder));
+//                } catch (Exception e) {
+//                    Log.e("errnos", e.toString());
+//                }
+//            }
+
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
