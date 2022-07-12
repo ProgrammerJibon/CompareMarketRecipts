@@ -32,8 +32,7 @@ public class CropperActivity extends AppCompatActivity {
         options.setBrightnessEnabled(true);
         options.setContrastEnabled(true);
         UCrop.of(fileUril, Uri.fromFile(new File(getCacheDir(), dest_uri)))
-                .withAspectRatio(0, 0)
-                .withMaxResultSize(2048, 2048)
+                .withMaxResultSize(3840, 3840)
                 .start(CropperActivity.this);
         
     }
@@ -60,6 +59,7 @@ public class CropperActivity extends AppCompatActivity {
             final Throwable ucrop_error = UCrop.getError(data);
             assert ucrop_error != null;
             Toast.makeText(activity, "Something maybe not working\n"+ucrop_error.getMessage(), Toast.LENGTH_LONG).show();
+            activity.finish();
         }
     }
 }
