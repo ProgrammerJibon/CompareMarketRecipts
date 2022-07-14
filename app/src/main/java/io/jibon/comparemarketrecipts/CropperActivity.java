@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,7 +18,6 @@ import java.util.UUID;
 
 public class CropperActivity extends AppCompatActivity {
     Activity activity;
-    String result;
     Uri fileUril;
 
     @Override
@@ -29,10 +29,20 @@ public class CropperActivity extends AppCompatActivity {
 
         String dest_uri = UUID.randomUUID().toString() + ".jpg";
         UCrop.Options options = new UCrop.Options();
+        options.setFreeStyleCropEnabled(true);
         options.setBrightnessEnabled(true);
         options.setContrastEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            options.setCropFrameColor(activity.getColor(R.color.primary));
+            options.setCropGridColor(activity.getColor(R.color.primary));
+            options.setStatusBarColor(activity.getColor(R.color.primary));
+            options.setCropGridCornerColor(activity.getColor(R.color.secondary));
+            options.setToolbarColor(activity.getColor(R.color.primary));
+            options.setActiveControlsWidgetColor(activity.getColor(R.color.primary));
+        }
         UCrop.of(fileUril, Uri.fromFile(new File(getCacheDir(), dest_uri)))
                 .withMaxResultSize(3840, 3840)
+                .withOptions(options)
                 .start(CropperActivity.this);
         
     }
@@ -40,8 +50,7 @@ public class CropperActivity extends AppCompatActivity {
     private void readIntent() {
         Intent intent = getIntent();
         if (intent.getExtras() != null){
-            result = intent.getStringExtra("DATA");
-            fileUril = Uri.parse(result);
+            fileUril = intent.getParcelableExtra("IMG_URI");
 
         }
     }
