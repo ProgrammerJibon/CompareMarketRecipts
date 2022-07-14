@@ -2,9 +2,12 @@ package io.jibon.comparemarketrecipts;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 public class ProductsFromImage extends AppCompatActivity {
     String allTextFromImage;
@@ -24,6 +27,23 @@ public class ProductsFromImage extends AppCompatActivity {
             allTextFromImage = extras.getString("AllTextFromImage");
         }
 
+        ArrayList<String[]> arrayList = new ArrayList<>();
+
+        String[] allLinesFromImage = allTextFromImage.split("\n");
+        for (int i = 0; i < allLinesFromImage.length; i++) {
+            String product, price;
+            if (allLinesFromImage[i].startsWith("$") || allLinesFromImage[i].startsWith("€")) {
+                product = allLinesFromImage[i - 1];
+                price = allLinesFromImage[i];
+                if (product != null && price != null && !product.contains("TOTAL") && !product.contains("AMOUNT")) {
+                    product = product.replaceAll("[^A-Za-z\\s]+", "");
+                    price = price.replaceAll("[^0-9\\.]+", "");
+                    Log.e("errnos", product + "\t" + price);
+                }
+            }
+
+
+        }
         tv.setText(allTextFromImage);
 
     }
