@@ -1,16 +1,9 @@
 package io.jibon.comparemarketrecipts;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -18,30 +11,23 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 public class Home extends AppCompatActivity {
     Button button_next, button_recrop;
@@ -76,7 +62,13 @@ public class Home extends AppCompatActivity {
             }else{
                 try {
                     selected_image_bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selected_image_uri);
-                    getTextFromImage(selected_image_bitmap);
+                    String textFromImage = getTextFromImage(selected_image_bitmap);
+                    if (textFromImage != null) {
+                        Intent intent = new Intent(activity, ProductsFromImage.class);
+                        intent.putExtra("AllTextFromImage", textFromImage);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,22 +119,26 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    private void getTextFromImage(Bitmap selected_image_bitmap) {
+    private String getTextFromImage(Bitmap selected_image_bitmap) {
         TextRecognizer recognizer = new TextRecognizer.Builder(activity).build();
-        if (!recognizer.isOperational()){
+        if (!recognizer.isOperational()) {
             Toast.makeText(activity, "Text Recognizer is not working...", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Frame frame = new Frame.Builder().setBitmap(selected_image_bitmap).build();
             SparseArray<TextBlock> textBlockSparseArray = recognizer.detect(frame);
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < textBlockSparseArray.size(); i++){
+            for (int i = 0; i < textBlockSparseArray.size(); i++) {
                 TextBlock textBlock = textBlockSparseArray.valueAt(i);
                 stringBuilder.append(textBlock.getValue());
                 stringBuilder.append("\n");
             }
-            Log.e("errnos", "\n"+ stringBuilder);
-//            text_data.setText(stringBuilder.toString());
+            if (((stringBuilder.toString().replace(" ", "")).replace("\n", "")).length() < 1) {
+                Toast.makeText(activity, "No texts found on the image", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            return stringBuilder.toString();
         }
+        return null;
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -172,7 +168,9 @@ public class Home extends AppCompatActivity {
             if (resultCode == -1 && requestCode == 10118) {
                 String result = data.getStringExtra("RESULT");
                 if (result != null) {
-                    imageCropped(Uri.parse(result));
+                    if (Uri.parse(result) != null) {
+                        imageCropped(Uri.parse(result));
+                    }
                 }
             } else if (resultCode == -1 && requestCode == 10119) {
                 if (dest_uri != null){

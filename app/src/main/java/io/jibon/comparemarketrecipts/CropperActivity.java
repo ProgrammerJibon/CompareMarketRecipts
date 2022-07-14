@@ -1,15 +1,14 @@
 package io.jibon.comparemarketrecipts;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.yalantis.ucrop.UCrop;
 
@@ -30,8 +29,10 @@ public class CropperActivity extends AppCompatActivity {
         String dest_uri = UUID.randomUUID().toString() + ".jpg";
         UCrop.Options options = new UCrop.Options();
         options.setFreeStyleCropEnabled(true);
-        options.setBrightnessEnabled(true);
-        options.setContrastEnabled(true);
+        options.setBrightnessEnabled(false);
+        options.setContrastEnabled(false);
+        options.setSaturationEnabled(false);
+        options.setSharpnessEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             options.setCropFrameColor(activity.getColor(R.color.primary));
             options.setCropGridColor(activity.getColor(R.color.primary));
