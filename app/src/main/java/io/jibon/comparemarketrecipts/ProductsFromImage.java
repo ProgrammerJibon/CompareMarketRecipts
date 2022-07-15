@@ -3,6 +3,7 @@ package io.jibon.comparemarketrecipts;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,9 +42,19 @@ public class ProductsFromImage extends AppCompatActivity {
                     Log.e("errnos", product + "\t" + price);
                 }
             }
-
-
         }
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        Internet2 task = new Internet2(activity, "https://reqres.in/api/products/3", (code, result) -> {
+            if (code == 200) {
+                Log.e("errnos", String.valueOf(result));
+            }
+        });
+        task.execute();
         tv.setText(allTextFromImage);
 
     }
