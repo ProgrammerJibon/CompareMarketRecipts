@@ -3,13 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="all"
     tools:context=".ProductsFromImage">
 
-    <TextView
-        android:id="@+id/tv"
+    <RelativeLayout
+        android:id="@+id/get_shop_name_rl_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:textIsSelectable="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/shop_name_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="16dp"
+            android:text="Please Enter Shop Name"
+            android:textIsSelectable="true" />
+
+        <EditText
+            android:id="@+id/edit_text_shop_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shop_name_hint"
+            android:background="@color/transparent"
+            android:hint="Ex: Barisal Super Shop"
+            android:padding="16dp" />
+
+
+        <ProgressBar
+            android:id="@+id/editTextShopNameChangerLoading"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_text_shop_name"
+            android:indeterminate="true" />
+
+        <ListView
+            android:id="@+id/list_shop_names"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/edit_text_shop_name"
+            android:layout_alignParentBottom="true"
+            android:padding="16dp" />
+    </RelativeLayout>
 
 </RelativeLayout>

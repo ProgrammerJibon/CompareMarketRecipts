@@ -2,6 +2,7 @@ package io.jibon.comparemarketrecipts;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.webkit.CookieManager;
 
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
     private final TaskListener taskListener;
     public Activity context;
     public String url;
-    private Integer code;
+    private Integer code = 0;
 
     public Internet2(Activity context, String url, TaskListener listener) {
         this.context = context;
@@ -27,9 +28,13 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
 
     @Override
     protected void onPostExecute(JSONObject result) {
-        super.onPostExecute(result);
-        if (this.taskListener != null) {
-            this.taskListener.onFinished(code, result);
+        try {
+            super.onPostExecute(result);
+            if (this.taskListener != null) {
+                this.taskListener.onFinished(code, result);
+            }
+        } catch (Exception e) {
+            Log.e("errnos", e.toString());
         }
     }
 
@@ -40,7 +45,6 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
             String allLines = "";
             URL newLink = new URL(url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) newLink.openConnection();
-            this.code = httpURLConnection.getResponseCode();
             // Fetch and set cookies in requests
             CookieManager cookieManager = CookieManager.getInstance();
             String cookie = cookieManager.getCookie(httpURLConnection.getURL().toString());
@@ -48,6 +52,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
                 httpURLConnection.setRequestProperty("Cookie", cookie);
             }
             httpURLConnection.connect();
+            this.code = httpURLConnection.getResponseCode();
             // Get cookies from responses and save into the cookie manager
             List cookieList = httpURLConnection.getHeaderFields().get("Set-Cookie");
             if (cookieList != null) {
@@ -66,6 +71,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
             JSONObject jsonObject = new JSONObject(allLines);
             return jsonObject;
         } catch (Exception e) {
+            Log.e("errnos", this.url + " - Internet2 error:" + e);
             return null;
         }
     }
