@@ -71,6 +71,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
             JSONObject jsonObject = new JSONObject(allLines);
             return jsonObject;
         } catch (Exception e) {
+            new Settings(context).toast("Unnable to connect...", R.drawable.ic_baseline_clear_24);
             Log.e("errnos", this.url + " - Internet2 error:" + e);
             return null;
         }

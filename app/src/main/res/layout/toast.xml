@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    android:backgroundTint="@color/transparent"
+    app:cardPreventCornerOverlap="false"
     app:cardCornerRadius="10dp"
     tools:ignore="all">
 
@@ -14,7 +13,6 @@
         android:id="@+id/Custom_toast"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#668C8C8C"
         android:orientation="horizontal">
 
         <ImageView
@@ -35,6 +33,6 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/app_name"
-            android:textColor="@color/white" />
+            android:textColor="@color/gray" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

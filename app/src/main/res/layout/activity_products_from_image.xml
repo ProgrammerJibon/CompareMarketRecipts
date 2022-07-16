@@ -6,11 +6,67 @@
     tools:ignore="all"
     tools:context=".ProductsFromImage">
 
+
+    <RelativeLayout
+        android:id="@+id/add_shop_items_rl_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/additemtocolon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shop_location_for_adding"
+            android:padding="12dp"
+            android:text="Please click on best matches product name of your image"
+            android:textSize="11dp" />
+
+        <TextView
+            android:id="@+id/shop_name_for_adding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="4dp"
+            android:text="Barisal Super Shop"
+            android:textColor="@color/primary"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/shop_location_for_adding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/shop_name_for_adding"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:text="Barisal, Bangladesh"
+            android:textColor="@color/gray"
+            android:textSize="11dp"
+            android:textStyle="italic" />
+
+
+        <ListView
+            android:id="@+id/show_related_products_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/additemtocolon" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/get_shop_name_rl_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
+        android:visibility="gone"
         android:layout_alignParentBottom="true">
 
         <TextView
@@ -32,21 +88,23 @@
             android:padding="16dp" />
 
 
-        <ProgressBar
-            android:id="@+id/editTextShopNameChangerLoading"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edit_text_shop_name"
-            android:indeterminate="true" />
-
         <ListView
             android:id="@+id/list_shop_names"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
+            android:divider="@color/transparent"
             android:layout_below="@+id/edit_text_shop_name"
             android:layout_alignParentBottom="true"
             android:padding="16dp" />
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/editTextShopNameChangerLoading"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:indeterminate="true" />
+
 
 </RelativeLayout>
