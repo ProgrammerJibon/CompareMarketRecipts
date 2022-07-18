@@ -44,4 +44,32 @@
         android:verticalSpacing="8dp"
         tools:listitem="@layout/sample_similars_datatype" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gridview_for_similar_data_types"
+        android:paddingHorizontal="20dp"
+        android:text="Or Custom add more:"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/addManuallyItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gridview_for_similar_data_types"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/manualName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@color/transparent"
+            android:hint="Product Name"
+            android:padding="16dp" />
+    </LinearLayout>
+
+
 </RelativeLayout>

@@ -1,29 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context="io.jibon.comparemarketrecipts.MainActivity">
+    android:background="@color/white"
+    tools:ignore="all">
+
+    <LinearLayout
+        android:id="@+id/rand1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/secondary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:text="@string/app_name"
+            android:textColor="@color/halka_sada"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/splash_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:text="@string/welcome_message"
-        android:textColor="@color/white" />
+        android:id="@+id/mainActivityTitle"
+        android:layout_below="@id/rand1"
+        android:background="#C5C5C5"
+        android:padding="16dp"
+        android:text="Welcome back"
+        android:textColor="@color/white"
+        android:textSize="14dp" />
 
-    <ProgressBar
-        android:id="@+id/splash_progress"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/home_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/home_tab_layout"
+        android:layout_below="@+id/mainActivityTitle"
+        android:clipToPadding="true" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/home_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:indeterminateTint="@color/primary"
-        tools:targetApi="lollipop" />
+        android:background="@color/white"
+        app:tabIconTint="@color/gray"
+        app:tabIndicatorColor="@color/secondary"
+        app:tabRippleColor="@color/primary"
+        tools:targetApi="s" />
 </RelativeLayout>

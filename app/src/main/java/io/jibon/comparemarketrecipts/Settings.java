@@ -28,7 +28,7 @@ public class Settings {
 
     public Settings(Activity activity) {
         this.activity = activity;
-        this.JSONLINK = "http://10.5.3.231/";
+        this.JSONLINK = "https://api.jibon.io/";
     }
 
     public String linkForJson(String extra) {

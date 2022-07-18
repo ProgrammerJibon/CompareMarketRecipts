@@ -100,7 +100,7 @@ public class ProductsFromImage extends AppCompatActivity {
 
     public void editTextInputOnchange(String editable, ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
-        String link = new Settings(activity).linkForJson("api.php?getAllShopName=1&shop_name=" + editable.toString());
+        String link = new Settings(activity).linkForJson("comparemarketrecipts.php?getAllShopName=1&shop_name=" + editable.toString());
         Internet2 task = new Internet2(activity, link, (code, result) -> {
             try {
                 progressBar.setVisibility(View.GONE);
@@ -164,7 +164,7 @@ public class ProductsFromImage extends AppCompatActivity {
                                                             builder2.setItems(states_list, (dialog2, which2) -> {
                                                                 try {
                                                                     progressBar.setVisibility(View.VISIBLE);
-                                                                    String link = new Settings(activity).linkForJson("api.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(countries_names.get(which)) + "&city=" + URLEncoder.encode(states_names.get(which2)));
+                                                                    String link = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(countries_names.get(which)) + "&city=" + URLEncoder.encode(states_names.get(which2)));
                                                                     Internet2 task = new Internet2(activity, link, (code, result) -> {
                                                                         progressBar.setVisibility(View.GONE);
                                                                         try {
@@ -205,7 +205,7 @@ public class ProductsFromImage extends AppCompatActivity {
                                             shop_id = getAllShopName.getJSONObject(position).getString("id");
                                         }
                                         progressBar.setVisibility(View.VISIBLE);
-                                        String link3 = new Settings(activity).linkForJson("api.php?addShopId=" + URLEncoder.encode(shop_id));
+                                        String link3 = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
                                         Internet2 task3 = new Internet2(activity, link3, (code, result) -> {
                                             progressBar.setVisibility(View.GONE);
                                             try {
@@ -249,7 +249,7 @@ public class ProductsFromImage extends AppCompatActivity {
             procutsWithComma.append(product_name_price_list.get(i).get(0)).append(",");
         }
         Log.e("errnos", procutsWithComma.toString());
-        String link = new Settings(activity).linkForJson("api.php?getSimilar=" + URLEncoder.encode(procutsWithComma.toString()));
+        String link = new Settings(activity).linkForJson("comparemarketrecipts.php?getSimilar=" + URLEncoder.encode(procutsWithComma.toString()));
         Internet2 task = new Internet2(activity, link, (code, result) -> {
             try {
                 progressBar.setVisibility(View.GONE);

@@ -7,21 +7,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
+import io.jibon.comparemarketrecipts.Fragments.Home;
+import io.jibon.comparemarketrecipts.Fragments.ShowPricesByCity;
 
 public class MainActivity extends AppCompatActivity {
     private Activity activity;
-    int rand = (int) Math.ceil((Math.random() * (999999 - 100000)) + 100000);
-    TextView splash_text;
+    public TabLayout tabLayoutMainActivity;
+    public ViewPager2 viewPager2;
     String[] permissions = {
             Manifest.permission.CAMERA,
             Manifest.permission.INTERNET,
@@ -40,44 +52,65 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //find blocks
+        tabLayoutMainActivity = activity.findViewById(R.id.home_tab_layout);
+        viewPager2 = activity.findViewById(R.id.home_view_pager);
 
-        splash_text = findViewById(R.id.splash_text);
-        //start working
-        MainActivity.this.run();
-
+        run();
     }
 
     public void run() {
-        Intent intent = new Intent(activity, Home.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         if (hasPermission(this, permissions)) {
-//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//
-//
-//            if (location != null){
-//                double longitude = location.getLongitude();
-//                double latitude = location.getLatitude();
-//
-//                try {
-//                    Address geocoder = new Geocoder(activity).getFromLocation(latitude, longitude, 1).get(0);
-//                    Log.e("errnos", String.valueOf(geocoder));
-//                } catch (Exception e) {
-//                    Log.e("errnos", e.toString());
+            try {
+                tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_add_24));
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    Objects.requireNonNull(Objects.requireNonNull(tabLayoutMainActivity.getTabAt(0)).getIcon()).setTint(activity.getColor(R.color.white));
 //                }
-//            }
+                tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_location_city_24));
+                tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_person_24));
+                ArrayList<Fragment> fragments = new ArrayList<>();
+                fragments.add(new Home());
+                fragments.add(new ShowPricesByCity());
+//                fragments.add(new AllContacts());
+                viewPager2.setAdapter(new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), fragments));
+                viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                        if (((double) positionOffset) == 0.0d) {
+                            tabLayoutMainActivity.selectTab(tabLayoutMainActivity.getTabAt(position));
+                        }
+                        tabLayoutMainActivity.setScrollPosition(position, positionOffset, false);
+                    }
+                });
+                viewPager2.setCurrentItem(1, true);
+                this.tabLayoutMainActivity.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        viewPager2.setCurrentItem(tab.getPosition(), true);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Objects.requireNonNull(tab.getIcon()).setTint(activity.getColor(R.color.secondary));
+                        }
+                    }
 
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    activity.startActivity(intent);
-                    overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-                    activity.finish();
-                }
-            }, 1000);
-        }else{
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Objects.requireNonNull(tab.getIcon()).setTint(activity.getColor(R.color.gray));
+                        }
+                    }
+
+                    public void onTabReselected(TabLayout.Tab tab) {
+                    }
+                });
+            } catch (Exception error) {
+                Log.e("errnos", error.toString());
+            }
+        } else {
             ActivityCompat.requestPermissions(activity, permissions, REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(activity, "Running in background...", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
     }
 
     public boolean hasPermission(Context context, String[] permissionx) {
@@ -124,17 +157,27 @@ public class MainActivity extends AppCompatActivity {
                 activity.finish();
             });
             builder.show();
-        }else if (results){
+        } else if (results) {
             run();
-        }else{
+        } else {
             finish();
         }
     }
 
+    public static class FragmentAdapter extends FragmentStateAdapter {
+        ArrayList<Fragment> fragments;
 
-    @Override
-    public void onBackPressed() {
-        //back to android home without closing app
-        startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
+        public FragmentAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, ArrayList<Fragment> fragments2) {
+            super(fragmentManager, lifecycle);
+            this.fragments = fragments2;
+        }
+
+        public Fragment createFragment(int position) {
+            return this.fragments.get(position);
+        }
+
+        public int getItemCount() {
+            return this.fragments.size();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package io.jibon.comparemarketrecipts;
+package io.jibon.comparemarketrecipts.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,49 +15,88 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
-public class Home extends AppCompatActivity {
+import io.jibon.comparemarketrecipts.CropperActivity;
+import io.jibon.comparemarketrecipts.ProductsFromImage;
+import io.jibon.comparemarketrecipts.R;
+
+public class Home extends Fragment {
+
     Button button_next, button_recrop;
     Activity activity;
     ImageView image_crop_view;
     ActivityResultLauncher<String> mGetContent1;
     Uri selected_image_uri, dest_uri;
     Bitmap selected_image_bitmap;
+    TextView mainActivityTitle;
+    String pageTitle;
+
+
+    public Home() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        if (menuVisible) {
+            mainActivityTitle.setText(pageTitle);
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        activity = this;
+        super.onCreate(savedInstanceState);
+    }
 
-        image_crop_view = activity.findViewById(R.id.image_view_crop);
-        button_next = activity.findViewById(R.id.button_next);
-        button_recrop = activity.findViewById(R.id.button_recrop);
+    @Override
+    public void onAttach(@NonNull Activity context) {
+        super.onAttach(context);
+        this.activity = context;
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View viewFragments = inflater.inflate(R.layout.fragment_home, container, false);
+        // find blocks
+        mainActivityTitle = activity.findViewById(R.id.mainActivityTitle);
+        image_crop_view = viewFragments.findViewById(R.id.image_view_crop);
+        button_next = viewFragments.findViewById(R.id.button_next);
+        button_recrop = viewFragments.findViewById(R.id.button_recrop);
+
+        // set startup values
+        pageTitle = ("Scan receipts");
+
+        // start
 
         button_recrop.setOnClickListener(view -> {
-            if (selected_image_uri != null){
+            if (selected_image_uri != null) {
                 cropperActivity(selected_image_uri);
             }
         });
 
         button_next.setOnClickListener(view -> {
-            if (selected_image_uri == null){
+            if (selected_image_uri == null) {
                 Toast.makeText(activity, "Please select an image first...", Toast.LENGTH_LONG).show();
             }else{
                 try {
@@ -92,7 +131,7 @@ public class Home extends AppCompatActivity {
                 cropperActivity(result);
             }
         });
-
+        return viewFragments;
     }
 
     public void cropperActivity(Uri image_uri){
@@ -162,7 +201,7 @@ public class Home extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (resultCode == -1 && requestCode == 10118) {
@@ -180,10 +219,5 @@ public class Home extends AppCompatActivity {
         }catch (Exception e){
             Log.e("errnos", e.getMessage());
         }
-    }
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(activity, "Running in background...", Toast.LENGTH_LONG).show();
-        startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
     }
 }

@@ -95,7 +95,7 @@ public class SameProductListAdapter extends BaseAdapter {
                 gridview_for_similar_data_types.setOnItemClickListener((adapterView, view, i, l) -> {
                     view.setOnClickListener(null);
                     progressBar.setVisibility(View.VISIBLE);
-                    String link = new Settings(activity).linkForJson("api.php?addProductItem=" + shop_id + "&productName=" + URLEncoder.encode(stringArrayList.get(i)) + "&productPrice=" + URLEncoder.encode(String.valueOf(arrayList.get(position).get(1))));
+                    String link = new Settings(activity).linkForJson("comparemarketrecipts.php?addProductItem=" + shop_id + "&productName=" + URLEncoder.encode(stringArrayList.get(i)) + "&productPrice=" + URLEncoder.encode(String.valueOf(arrayList.get(position).get(1))));
                     Internet2 task = new Internet2(activity, link, (code, result) -> {
                         try {
                             progressBar.setVisibility(View.GONE);
