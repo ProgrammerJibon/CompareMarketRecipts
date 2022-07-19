@@ -1,4 +1,4 @@
-package io.jibon.comparemarketrecipts;
+package io.jibon.comparemarketrecipts.Adapter;
 
 import android.content.Context;
 import android.util.AttributeSet;

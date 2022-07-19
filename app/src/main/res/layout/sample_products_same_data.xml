@@ -25,9 +25,10 @@
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
+        android:textColor="@color/gray"
         android:text="Related to Rich:" />
 
-    <io.jibon.comparemarketrecipts.FullLengthListView
+    <io.jibon.comparemarketrecipts.Adapter.FullLengthListView
         android:id="@+id/gridview_for_similar_data_types"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

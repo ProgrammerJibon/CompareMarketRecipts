@@ -116,12 +116,24 @@ public class ProductsFromImage extends AppCompatActivity {
 
     }
 
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public ArrayList<ArrayList> stringToProductNamePrice(String allTextFromImage) {
         ArrayList<ArrayList> result = new ArrayList<>();
         String[] allLinesFromImage = allTextFromImage.split("\n");
         for (int i = 0; i < allLinesFromImage.length; i++) {
             String product, price;
-            if (allLinesFromImage[i].startsWith("$") || allLinesFromImage[i].startsWith("€")) {
+            if (i == 0) {
+                continue;
+            }
+            if (allLinesFromImage[i].startsWith("$") || allLinesFromImage[i].startsWith("€") || ((isNumeric(allLinesFromImage[i]) && !isNumeric(allLinesFromImage[i - 1])))) {
                 product = allLinesFromImage[i - 1];
                 price = allLinesFromImage[i];
                 if (product != null && price != null && !product.contains("TOTAL") && !product.contains("AMOUNT")) {
@@ -130,7 +142,9 @@ public class ProductsFromImage extends AppCompatActivity {
                     price = price.replaceAll("[^0-9\\.]+", "").trim();
                     arrayList1.add(product);
                     arrayList1.add(price);
-                    result.add(arrayList1);
+                    if (!product.equals("") || !price.equals("")) {
+                        result.add(arrayList1);
+                    }
                 }
             }
         }
@@ -293,7 +307,6 @@ public class ProductsFromImage extends AppCompatActivity {
         for (int i = 0; i < product_name_price_list.size(); i++) {
             procutsWithComma.append(product_name_price_list.get(i).get(0)).append(",");
         }
-        Log.e("errnos", procutsWithComma.toString());
         String link = new Settings(activity).linkForJson("comparemarketrecipts.php?getSimilar=" + URLEncoder.encode(procutsWithComma.toString()));
         Internet2 task = new Internet2(activity, link, (code, result) -> {
             try {
@@ -303,7 +316,6 @@ public class ProductsFromImage extends AppCompatActivity {
                         BaseAdapter baseAdapter = new SameProductListAdapter(activity, product_name_price_list, result.getJSONObject("getSimilar"), shop_id, shop_name);
                         listViewForAddingItemsOnServer.setAdapter(baseAdapter);
                     }
-                    Log.e("errnos", result.toString());
                 }
             } catch (Exception e) {
                 e.toString();
