@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
+        android:background="#F8F8F8"
         android:visibility="gone">
 
         <TextView
@@ -20,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/shop_location_for_adding"
+            android:background="#F1F1F1"
             android:padding="12dp"
             android:text="Please click on best matches product name of your image"
             android:textSize="11dp" />
@@ -28,6 +30,7 @@
             android:id="@+id/shop_name_for_adding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#E3E3E3"
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingTop="24dp"
@@ -46,6 +49,7 @@
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingTop="0dp"
+            android:background="#E3E3E3"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
             android:text="Barisal, Bangladesh"
@@ -58,7 +62,58 @@
             android:id="@+id/show_related_products_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/additemtocolon" />
+            android:layout_above="@+id/rand2"
+            android:layout_below="@+id/additemtocolon"
+            android:background="#F8F8F8" />
+
+        <LinearLayout
+            android:id="@+id/rand2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/addingdone"
+            android:layout_marginHorizontal="8dp"
+            android:background="#F1F1F1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/addCustomProductName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:background="@color/transparent"
+                android:hint="Product Name"
+                android:inputType="text"
+                android:padding="16dp" />
+
+            <EditText
+                android:id="@+id/addCustomProductPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:hint="Price"
+                android:inputType="numberDecimal"
+                android:padding="16dp" />
+
+            <Button
+                android:id="@+id/addCustomProductButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:backgroundTint="@color/secondary"
+                android:text="Add"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/addingdone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="8dp"
+            android:text="Done" />
     </RelativeLayout>
 
     <RelativeLayout

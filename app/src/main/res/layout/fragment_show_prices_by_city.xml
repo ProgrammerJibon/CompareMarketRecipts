@@ -3,10 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.jibon.comparemarketrecipts.Fragments.ShowPricesByCity"
+    tools:context="io.jibon.comparemarketrecipts.Fragments.ShowPrices"
     tools:ignore="all">
 
+    <Spinner
+        android:id="@+id/countrySelector"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:tooltipText="@string/app_name" />
+
+    <Spinner
+        android:id="@+id/citySelector"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/countrySelector" />
+
     <ListView
+        android:visibility="gone"
         android:id="@+id/locationsProductsPrices_ShowPriceByCity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

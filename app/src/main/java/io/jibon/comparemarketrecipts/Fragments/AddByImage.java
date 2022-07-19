@@ -37,7 +37,7 @@ import io.jibon.comparemarketrecipts.CropperActivity;
 import io.jibon.comparemarketrecipts.ProductsFromImage;
 import io.jibon.comparemarketrecipts.R;
 
-public class Home extends Fragment {
+public class AddByImage extends Fragment {
 
     Button button_next, button_recrop;
     Activity activity;
@@ -49,7 +49,7 @@ public class Home extends Fragment {
     String pageTitle;
 
 
-    public Home() {
+    public AddByImage() {
         // Required empty public constructor
     }
 

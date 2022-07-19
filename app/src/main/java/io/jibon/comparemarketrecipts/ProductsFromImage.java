@@ -3,6 +3,8 @@ package io.jibon.comparemarketrecipts;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,13 +32,14 @@ import java.util.List;
 
 public class ProductsFromImage extends AppCompatActivity {
     protected ArrayList<ArrayList> arrayList;
-    EditText editTextShopName;
+    EditText editTextShopName, addCustomProductName, addCustomProductPrice;
     String allTextFromImage, shop_id, addedShopId, shop_country_name, shop_city_name, shop_name;
     Activity activity;
     ListView listViewShopNamesFromInternet, listViewForAddingItemsOnServer;
     ProgressBar editTextShopNameChangerLoading;
     RelativeLayout get_shop_name_rl_layout, add_shop_items_rl_layout;
     TextView shop_name_for_adding, shop_location_for_adding;
+    Button addingDone, addCustomProductButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,9 @@ public class ProductsFromImage extends AppCompatActivity {
         setContentView(R.layout.activity_products_from_image);
         activity = this;
 
-
+        addCustomProductButton = activity.findViewById(R.id.addCustomProductButton);
+        addCustomProductName = activity.findViewById(R.id.addCustomProductName);
+        addCustomProductPrice = activity.findViewById(R.id.addCustomProductPrice);
         editTextShopName = activity.findViewById(R.id.edit_text_shop_name);
         listViewShopNamesFromInternet = activity.findViewById(R.id.list_shop_names);
         get_shop_name_rl_layout = activity.findViewById(R.id.get_shop_name_rl_layout);
@@ -52,6 +58,33 @@ public class ProductsFromImage extends AppCompatActivity {
         shop_name_for_adding = activity.findViewById(R.id.shop_name_for_adding);
         shop_location_for_adding = activity.findViewById(R.id.shop_location_for_adding);
         listViewForAddingItemsOnServer = activity.findViewById(R.id.show_related_products_listview);
+        addingDone = activity.findViewById(R.id.addingdone);
+
+
+        addCustomProductButton.setOnClickListener(v -> {
+            new Settings(activity);
+            String product = addCustomProductName.getText().toString(), price = addCustomProductPrice.getText().toString();
+            product = product.replaceAll("[^A-Za-z\\s]+", "").trim().replaceAll(" +", " ");
+            price = price.replaceAll("[^0-9\\.]+", "").trim().replaceAll(" +", " ");
+            if (!product.equals("") && !price.equals("")) {
+                new Settings(activity).addItemsPricesOfCity(editTextShopNameChangerLoading, shop_id, product, price, shop_name, null);
+                addCustomProductName.setText("");
+                addCustomProductPrice.setText("");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    addCustomProductPrice.setFocusedByDefault(false);
+                    addCustomProductName.setFocusedByDefault(false);
+                }
+            }
+        });
+
+
+        addingDone.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            intent.putExtra("pageNumber", 2);
+            startActivity(intent);
+            finish();
+        });
 
         get_shop_name_rl_layout.setVisibility(View.VISIBLE);
         editTextInputOnchange(" ", editTextShopNameChangerLoading);
@@ -76,8 +109,13 @@ public class ProductsFromImage extends AppCompatActivity {
             allTextFromImage = extras.getString("AllTextFromImage");
         }
 
-        arrayList = new ArrayList<>();
+        arrayList = stringToProductNamePrice(allTextFromImage);
 
+
+    }
+
+    public ArrayList<ArrayList> stringToProductNamePrice(String allTextFromImage) {
+        ArrayList<ArrayList> result = new ArrayList<>();
         String[] allLinesFromImage = allTextFromImage.split("\n");
         for (int i = 0; i < allLinesFromImage.length; i++) {
             String product, price;
@@ -90,11 +128,11 @@ public class ProductsFromImage extends AppCompatActivity {
                     price = price.replaceAll("[^0-9\\.]+", "").trim();
                     arrayList1.add(product);
                     arrayList1.add(price);
-                    arrayList.add(arrayList1);
+                    result.add(arrayList1);
                 }
             }
         }
-
+        return result;
     }
 
 

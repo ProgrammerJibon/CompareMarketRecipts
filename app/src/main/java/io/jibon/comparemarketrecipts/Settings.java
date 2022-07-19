@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 public class Settings {
     public SharedPreferences preferences;
@@ -56,6 +58,29 @@ public class Settings {
             return false;
         }
 
+    }
+
+    public void addItemsPricesOfCity(ProgressBar progressBar, String shop_id, String productName, String productPrice, String shop_name, View finalConvertView) {
+        progressBar.setVisibility(View.VISIBLE);
+        String link = new Settings(activity).linkForJson("comparemarketrecipts.php?addProductItem=" + shop_id + "&productName=" + URLEncoder.encode(productName) + "&productPrice=" + URLEncoder.encode(productPrice));
+        Internet2 task = new Internet2(activity, link, (code, result) -> {
+            try {
+                progressBar.setVisibility(View.GONE);
+                if (code == 200 && result != null) {
+                    if (result.has("addProductItem")) {
+                        if (result.getInt("addProductItem") > 0) {
+                            if (finalConvertView != null) {
+                                finalConvertView.setAlpha(0.3F);
+                            }
+                            new Settings(activity).toast(productName + " added to " + shop_name + " for price comparing", R.drawable.ic_baseline_done_24);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("errnos", e.toString());
+            }
+        });
+        task.execute();
     }
 
     public Boolean setVisualMode() {

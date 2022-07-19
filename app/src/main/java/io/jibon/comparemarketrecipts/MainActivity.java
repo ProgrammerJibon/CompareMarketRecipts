@@ -27,13 +27,15 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import io.jibon.comparemarketrecipts.Fragments.Home;
-import io.jibon.comparemarketrecipts.Fragments.ShowPricesByCity;
+import io.jibon.comparemarketrecipts.Fragments.AddByImage;
+import io.jibon.comparemarketrecipts.Fragments.ShowPrices;
 
 public class MainActivity extends AppCompatActivity {
     private Activity activity;
     public TabLayout tabLayoutMainActivity;
     public ViewPager2 viewPager2;
+    public Integer pageNumber = -1;
+
     String[] permissions = {
             Manifest.permission.CAMERA,
             Manifest.permission.INTERNET,
@@ -55,22 +57,33 @@ public class MainActivity extends AppCompatActivity {
         tabLayoutMainActivity = activity.findViewById(R.id.home_tab_layout);
         viewPager2 = activity.findViewById(R.id.home_view_pager);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            pageNumber = extras.getInt("pageNumber");
+        }
+
         run();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (pageNumber != -1 && viewPager2.getChildCount() > pageNumber) {
+            viewPager2.setCurrentItem(pageNumber);
+            pageNumber = -1;
+        }
     }
 
     public void run() {
         if (hasPermission(this, permissions)) {
             try {
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_add_24));
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    Objects.requireNonNull(Objects.requireNonNull(tabLayoutMainActivity.getTabAt(0)).getIcon()).setTint(activity.getColor(R.color.white));
-//                }
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_location_city_24));
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_person_24));
                 ArrayList<Fragment> fragments = new ArrayList<>();
-                fragments.add(new Home());
-                fragments.add(new ShowPricesByCity());
-//                fragments.add(new AllContacts());
+                fragments.add(new AddByImage());
+                fragments.add(new ShowPrices(false));
+                fragments.add(new ShowPrices(true));
                 viewPager2.setAdapter(new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), fragments));
                 viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

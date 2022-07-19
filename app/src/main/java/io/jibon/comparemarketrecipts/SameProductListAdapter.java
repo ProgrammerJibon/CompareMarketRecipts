@@ -16,7 +16,6 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class SameProductListAdapter extends BaseAdapter {
@@ -94,24 +93,7 @@ public class SameProductListAdapter extends BaseAdapter {
                 View finalConvertView = convertView;
                 gridview_for_similar_data_types.setOnItemClickListener((adapterView, view, i, l) -> {
                     view.setOnClickListener(null);
-                    progressBar.setVisibility(View.VISIBLE);
-                    String link = new Settings(activity).linkForJson("comparemarketrecipts.php?addProductItem=" + shop_id + "&productName=" + URLEncoder.encode(stringArrayList.get(i)) + "&productPrice=" + URLEncoder.encode(String.valueOf(arrayList.get(position).get(1))));
-                    Internet2 task = new Internet2(activity, link, (code, result) -> {
-                        try {
-                            progressBar.setVisibility(View.GONE);
-                            if (code == 200 && result != null) {
-                                if (result.has("addProductItem")) {
-                                    if (result.getInt("addProductItem") > 0) {
-                                        finalConvertView.setAlpha(0.3F);
-                                        new Settings(activity).toast(stringArrayList.get(i) + " added to " + shop_name + " for price comparing", R.drawable.ic_baseline_done_24);
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            Log.e("errnos", e.toString());
-                        }
-                    });
-                    task.execute();
+                    new Settings(activity).addItemsPricesOfCity(progressBar, shop_id, stringArrayList.get(i), String.valueOf(arrayList.get(position).get(1)), shop_name, finalConvertView);
                 });
             }
 
