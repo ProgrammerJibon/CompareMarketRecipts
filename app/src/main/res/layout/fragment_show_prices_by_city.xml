@@ -6,23 +6,78 @@
     tools:context="io.jibon.comparemarketrecipts.Fragments.ShowPrices"
     tools:ignore="all">
 
-    <Spinner
-        android:id="@+id/countrySelector"
+    <LinearLayout
+        android:id="@+id/rand3"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:tooltipText="@string/app_name" />
+        android:layout_height="wrap_content"
+        android:background="#F8F8F8"
+        android:orientation="horizontal">
 
-    <Spinner
-        android:id="@+id/citySelector"
+        <Spinner
+            android:id="@+id/countrySelector"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_weight="5"
+            android:tooltipText="@string/app_name" />
+
+        <Spinner
+            android:id="@+id/citySelector"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/countrySelector"
+            android:layout_weight="3" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/searchForProductName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/countrySelector" />
+        android:layout_below="@+id/rand3"
+        android:background="#F8F8F8"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
+        android:drawablePadding="4dp"
+        android:drawableTint="@color/primary"
+        android:hint="Search for products"
+        android:padding="16dp" />
 
     <ListView
-        android:visibility="gone"
         android:id="@+id/locationsProductsPrices_ShowPriceByCity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/locationFrom_ShowPriceByCity" />
+        android:layout_below="@+id/searchForProductName"
+        android:layout_alignParentBottom="true" />
+
+    <LinearLayout
+        android:id="@+id/nothingFoundForYourSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchForProductName"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_baseline_terrain_24"
+            android:tint="@color/primary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Nothing found for your search" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchForProductName"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/primary" />
 </RelativeLayout>

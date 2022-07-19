@@ -31,6 +31,9 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
         try {
             super.onPostExecute(result);
             if (this.taskListener != null) {
+                if (result.has("error")) {
+                    new Settings(context).toast(result.getString("error"), R.drawable.ic_baseline_clear_24);
+                }
                 this.taskListener.onFinished(code, result);
             }
         } catch (Exception e) {

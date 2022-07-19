@@ -30,6 +30,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jibon.comparemarketrecipts.Adapter.SameProductListAdapter;
+
 public class ProductsFromImage extends AppCompatActivity {
     protected ArrayList<ArrayList> arrayList;
     EditText editTextShopName, addCustomProductName, addCustomProductPrice;
@@ -242,27 +244,32 @@ public class ProductsFromImage extends AppCompatActivity {
                                             shop_country_name = getAllShopName.getJSONObject(position).getString("country");
                                             shop_id = getAllShopName.getJSONObject(position).getString("id");
                                         }
-                                        progressBar.setVisibility(View.VISIBLE);
-                                        String link3 = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
-                                        Internet2 task3 = new Internet2(activity, link3, (code, result) -> {
-                                            progressBar.setVisibility(View.GONE);
-                                            try {
-                                                if (result.has("addShopId")) {
-                                                    shop_name_for_adding.setText(shop_name);
-                                                    shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
-                                                    addedShopId = result.getString("addShopId");
-                                                    get_shop_name_rl_layout.setVisibility(View.GONE);
-                                                    add_shop_items_rl_layout.setVisibility(View.VISIBLE);
-                                                    getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
-
-                                                } else {
-                                                    new Settings(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        });
-                                        task3.execute();
+                                        shop_name_for_adding.setText(shop_name);
+                                        shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
+                                        get_shop_name_rl_layout.setVisibility(View.GONE);
+                                        add_shop_items_rl_layout.setVisibility(View.VISIBLE);
+                                        getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
+//                                        progressBar.setVisibility(View.VISIBLE);
+//                                        String link3 = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
+//                                        Internet2 task3 = new Internet2(activity, link3, (code, result) -> {
+//                                            progressBar.setVisibility(View.GONE);
+//                                            try {
+//                                                if (result.has("addShopId")) {
+//                                                    shop_name_for_adding.setText(shop_name);
+//                                                    shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
+//                                                    addedShopId = result.getString("addShopId");
+//                                                    get_shop_name_rl_layout.setVisibility(View.GONE);
+//                                                    add_shop_items_rl_layout.setVisibility(View.VISIBLE);
+//
+//
+//                                                } else {
+//                                                    new Settings(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
+//                                                }
+//                                            } catch (Exception e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        });
+//                                        task3.execute();
                                     } catch (Exception e) {
                                         Log.e("errnos", "view1 onclick: " + e);
                                     }

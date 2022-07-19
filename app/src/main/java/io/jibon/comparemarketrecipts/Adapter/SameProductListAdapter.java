@@ -1,4 +1,4 @@
-package io.jibon.comparemarketrecipts;
+package io.jibon.comparemarketrecipts.Adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,6 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import io.jibon.comparemarketrecipts.R;
+import io.jibon.comparemarketrecipts.Settings;
 
 public class SameProductListAdapter extends BaseAdapter {
     public ArrayList<ArrayList> arrayList;
@@ -104,7 +107,7 @@ public class SameProductListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public class PlayersViewHolder {
+    public static class PlayersViewHolder {
         public TextView product_name_edittext = null;
         public GridView gridview_for_similar_data_types = null;
     }

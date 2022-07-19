@@ -3,12 +3,18 @@ package io.jibon.comparemarketrecipts.Fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,6 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import io.jibon.comparemarketrecipts.Adapter.GetProductsPricesAdapter;
+import io.jibon.comparemarketrecipts.Internet2;
 import io.jibon.comparemarketrecipts.R;
 import io.jibon.comparemarketrecipts.Settings;
 
@@ -27,9 +35,13 @@ import io.jibon.comparemarketrecipts.Settings;
 public class ShowPrices extends Fragment {
     Activity activity;
     TextView mainActivityTitle;
-    String pageTitle;
+    String pageTitle, selectedCountry = "", selectedCity = "", searchedItem = "";
     Boolean byYou;
     Spinner countrySelector, citySelector;
+    LinearLayout nothingFoundForYourSearch;
+    ProgressBar progressBar;
+    ListView locationsProductsPrices_ShowPriceByCity;
+    EditText searchForProductName;
 
     public ShowPrices(boolean byYou) {
         this.byYou = byYou;
@@ -62,6 +74,11 @@ public class ShowPrices extends Fragment {
         mainActivityTitle = activity.findViewById(R.id.mainActivityTitle);
         countrySelector = showPricesByCityView.findViewById(R.id.countrySelector);
         citySelector = showPricesByCityView.findViewById(R.id.citySelector);
+        nothingFoundForYourSearch = showPricesByCityView.findViewById(R.id.nothingFoundForYourSearch);
+        progressBar = showPricesByCityView.findViewById(R.id.progressBar);
+        locationsProductsPrices_ShowPriceByCity = showPricesByCityView.findViewById(R.id.locationsProductsPrices_ShowPriceByCity);
+        searchForProductName = showPricesByCityView.findViewById(R.id.searchForProductName);
+
 
         // set startup values
 
@@ -72,6 +89,24 @@ public class ShowPrices extends Fragment {
         }
 
         // start activity working
+
+        searchForProductName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                searchedItem = editable.toString().replaceAll("[^A-Za-z\\s]+", "").trim().replaceAll(" +", " ");
+                updatePriceListAdapter();
+            }
+        });
+
         try {
             JSONObject countries_states = new Settings(activity).countries_states();
             if (countries_states.has("countries")) {
@@ -90,7 +125,10 @@ public class ShowPrices extends Fragment {
                         try {
                             int shop_country_id = -1;
                             if (position != 0) {
-                                shop_country_id = countries.getJSONObject(position).getInt("id") + 1;
+                                selectedCountry = countries.getJSONObject(position - 1).getString("name");
+                                shop_country_id = countries.getJSONObject(position - 1).getInt("id");
+                            } else {
+                                selectedCountry = "";
                             }
 
                             JSONArray statesJSONArray = countries_states.getJSONArray("states");
@@ -103,6 +141,28 @@ public class ShowPrices extends Fragment {
                             }
                             ArrayAdapter<String> cityArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, states_names);
                             citySelector.setAdapter(cityArrayAdapter);
+
+                            citySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                    try {
+                                        if (i != 0) {
+                                            selectedCity = states_names.get(i);
+
+                                        } else {
+                                            selectedCity = "";
+                                        }
+                                        updatePriceListAdapter();
+                                    } catch (Exception e) {
+                                        Log.e("errnos", e.toString());
+                                    }
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                }
+                            });
                         } catch (Exception e) {
                             Log.e("errnos", e.toString());
                         }
@@ -120,5 +180,30 @@ public class ShowPrices extends Fragment {
 
         // return
         return showPricesByCityView;
+    }
+
+    private void updatePriceListAdapter() {
+        progressBar.setVisibility(View.VISIBLE);
+        String url = new Settings(activity).linkForJson("comparemarketrecipts.php?getProductsPrices=" + byYou + "&city=" + selectedCity + "&country=" + selectedCountry + "&search=" + searchedItem);
+        new Internet2(activity, url, (code, result) -> {
+            try {
+                progressBar.setVisibility(View.GONE);
+                nothingFoundForYourSearch.setVisibility(View.GONE);
+                if (code == 200 && result != null) {
+                    if (result.has("getProductsPrices")) {
+                        GetProductsPricesAdapter getProductsPricesAdapter = new GetProductsPricesAdapter(activity, result.getJSONArray("getProductsPrices"));
+                        locationsProductsPrices_ShowPriceByCity.setAdapter(getProductsPricesAdapter);
+                        if (result.getJSONArray("getProductsPrices").length() == 0) {
+                            nothingFoundForYourSearch.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        nothingFoundForYourSearch.setVisibility(View.VISIBLE);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("errnos", e.toString());
+            }
+        }).execute();
+
     }
 }
