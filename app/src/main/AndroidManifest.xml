@@ -4,7 +4,9 @@
     package="io.jibon.comparemarketrecipts">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:strict="" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
@@ -25,6 +27,10 @@
         android:theme="@style/Theme.CompareMarketRecipts"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6695709429891253~1179203113" />
+
         <activity
             android:name=".ProductsFromImage"
             android:exported="false" />

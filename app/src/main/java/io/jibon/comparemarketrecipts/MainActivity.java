@@ -1,6 +1,7 @@
 package io.jibon.comparemarketrecipts;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +23,9 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public TabLayout tabLayoutMainActivity;
     public ViewPager2 viewPager2;
     public Integer pageNumber = -1;
+    private AdView mAdView1;
 
     String[] permissions = {
             Manifest.permission.CAMERA,
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         //find blocks
         tabLayoutMainActivity = activity.findViewById(R.id.home_tab_layout);
         viewPager2 = activity.findViewById(R.id.home_view_pager);
+        mAdView1 = activity.findViewById(R.id.adView1);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -74,9 +80,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void run() {
         if (hasPermission(this, permissions)) {
             try {
+                MobileAds.initialize(this, initializationStatus -> {
+
+                });
+
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView1.loadAd(adRequest);
+
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_add_24));
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_location_city_24));
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_person_24));
