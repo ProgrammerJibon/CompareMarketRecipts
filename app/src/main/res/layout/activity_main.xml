@@ -39,7 +39,7 @@
         android:id="@+id/home_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/home_tab_layout"
+        android:layout_above="@+id/adView1"
         android:layout_below="@+id/mainActivityTitle"
         android:clipToPadding="true" />
 
@@ -47,10 +47,10 @@
         android:id="@+id/adView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/home_tab_layout"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-6695709429891253/7361468089"></com.google.android.gms.ads.AdView>
-
+        ads:adUnitId="ca-app-pub-6695709429891253/5553013652" />
+    <!--ads:adUnitId="ca-app-pub-6695709429891253/7361468089"-->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/home_tab_layout"
         android:layout_width="match_parent"

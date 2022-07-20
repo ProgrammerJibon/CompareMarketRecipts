@@ -68,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
             pageNumber = extras.getInt("pageNumber");
         }
 
+        MobileAds.initialize(this, initializationStatus -> {
+
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView1.loadAd(adRequest);
+
         run();
     }
 
@@ -84,12 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public void run() {
         if (hasPermission(this, permissions)) {
             try {
-                MobileAds.initialize(this, initializationStatus -> {
 
-                });
-
-                AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView1.loadAd(adRequest);
 
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_add_24));
                 tabLayoutMainActivity.addTab(tabLayoutMainActivity.newTab().setIcon((int) R.drawable.ic_baseline_location_city_24));
