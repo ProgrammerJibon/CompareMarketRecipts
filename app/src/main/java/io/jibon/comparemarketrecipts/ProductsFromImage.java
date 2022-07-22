@@ -39,9 +39,11 @@ public class ProductsFromImage extends AppCompatActivity {
     Activity activity;
     ListView listViewShopNamesFromInternet, listViewForAddingItemsOnServer;
     ProgressBar editTextShopNameChangerLoading;
+    TextRecognitionActivity textRecognitionActivity;
     RelativeLayout get_shop_name_rl_layout, add_shop_items_rl_layout;
     TextView shop_name_for_adding, shop_location_for_adding;
     Button addingDone, addCustomProductButton;
+    Boolean periodForDecimal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class ProductsFromImage extends AppCompatActivity {
         listViewForAddingItemsOnServer = activity.findViewById(R.id.show_related_products_listview);
         addingDone = activity.findViewById(R.id.addingdone);
 
+        textRecognitionActivity = new TextRecognitionActivity();
 
         addCustomProductButton.setOnClickListener(v -> {
             new Settings(activity);
@@ -109,6 +112,7 @@ public class ProductsFromImage extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             allTextFromImage = extras.getString("AllTextFromImage");
+            periodForDecimal = extras.getBoolean("periodForDecimal");
         }
 
         arrayList = stringToProductNamePrice(allTextFromImage);
@@ -126,27 +130,52 @@ public class ProductsFromImage extends AppCompatActivity {
     }
 
     public ArrayList<ArrayList> stringToProductNamePrice(String allTextFromImage) {
-        ArrayList<ArrayList> result = new ArrayList<>();
-        String[] allLinesFromImage = allTextFromImage.split("\n");
-        for (int i = 0; i < allLinesFromImage.length; i++) {
-            String product, price;
-            if (i == 0) {
-                continue;
-            }
-            if (allLinesFromImage[i].startsWith("$") || allLinesFromImage[i].startsWith("€") || ((isNumeric(allLinesFromImage[i]) && !isNumeric(allLinesFromImage[i - 1])))) {
-                product = allLinesFromImage[i - 1];
-                price = allLinesFromImage[i];
-                if (product != null && price != null && !product.contains("TOTAL") && !product.contains("AMOUNT")) {
-                    ArrayList arrayList1 = new ArrayList();
-                    product = product.replaceAll("[^A-Za-z\\s]+", "").trim();
-                    price = price.replaceAll("[^0-9\\.]+", "").trim();
-                    arrayList1.add(product);
-                    arrayList1.add(price);
-                    if (!product.equals("") || !price.equals("")) {
-                        result.add(arrayList1);
+        ArrayList<ArrayList> result = null;
+        if (textRecognitionActivity.start()) {
+            result = new ArrayList<>();
+        }
+        try {
+
+            String[] allLinesFromImage = allTextFromImage.split("\n");
+            for (int i = 0; i < allLinesFromImage.length; i++) {
+                String product, price;
+                if (i == 0) {
+                    continue;
+                }
+//                if (periodForDecimal) {
+//                    allLinesFromImage[i] = allLinesFromImage[i].replace(",", "");
+//                } else {
+//                    allLinesFromImage[i] = allLinesFromImage[i].replace(".", "");
+//                    allLinesFromImage[i] = allLinesFromImage[i].replace(",", ".");
+//                }
+                if (allLinesFromImage[i].startsWith("$") || allLinesFromImage[i].startsWith("€") || allLinesFromImage[i].endsWith("$") || allLinesFromImage[i].endsWith("€") || ((isNumeric(allLinesFromImage[i]) && !isNumeric(allLinesFromImage[i - 1])))) {
+
+                    product = allLinesFromImage[i - 1];
+                    price = allLinesFromImage[i];
+
+                    if ((allLinesFromImage[i - 1].endsWith("%") || isNumeric(allLinesFromImage[i - 1]))) {
+                        if (i < 2) {
+                            continue;
+                        }
+                        product = allLinesFromImage[i - 2];
+                    } else if (i >= 2 && (allLinesFromImage[i - 2].endsWith("%") || isNumeric(allLinesFromImage[i - 2]))) {
+                        continue;
+                    }
+
+                    if (product != null && price != null && !product.contains("TOTAL") && !product.contains("AMOUNT") && !product.contains("COST") && !product.contains("VAT") && !product.contains("iva") && !product.contains("prezzo")) {
+                        ArrayList arrayList1 = new ArrayList();
+                        product = product.replaceAll("[^A-Za-z0-9\\s]+", "").trim();
+                        price = price.replaceAll("[^0-9\\.]+", "").trim();
+                        arrayList1.add(product);
+                        arrayList1.add(price);
+                        if (!isNumeric(product.replaceAll(" +", "")) && !product.equals("") && !product.equals(" ") && !price.equals("") && !price.equals(" ")) {
+                            result.add(arrayList1);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            Log.e("errnos", e.toString());
         }
         return result;
     }

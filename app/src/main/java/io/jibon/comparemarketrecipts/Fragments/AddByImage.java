@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,16 +31,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+
+import java.util.ArrayList;
 
 import io.jibon.comparemarketrecipts.CropperActivity;
 import io.jibon.comparemarketrecipts.ProductsFromImage;
 import io.jibon.comparemarketrecipts.R;
+import io.jibon.comparemarketrecipts.Settings;
 
 public class AddByImage extends Fragment {
 
-    Button button_next, button_recrop;
+    Button button_next, button_recrop, goForCropOkayButton;
     Activity activity;
     ImageView image_crop_view;
     ActivityResultLauncher<String> mGetContent1;
@@ -47,6 +52,11 @@ public class AddByImage extends Fragment {
     Bitmap selected_image_bitmap;
     TextView mainActivityTitle;
     String pageTitle;
+    Boolean periodForDecimal = true;
+    RelativeLayout show_how_to_crop;
+
+    ArrayList<String> productsXXX = new ArrayList();
+    ArrayList<String> priceXXX = new ArrayList();
 
 
     public AddByImage() {
@@ -74,6 +84,15 @@ public class AddByImage extends Fragment {
         this.activity = context;
     }
 
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,6 +102,8 @@ public class AddByImage extends Fragment {
         image_crop_view = viewFragments.findViewById(R.id.image_view_crop);
         button_next = viewFragments.findViewById(R.id.button_next);
         button_recrop = viewFragments.findViewById(R.id.button_recrop);
+        goForCropOkayButton = viewFragments.findViewById(R.id.goForCropOkayButton);
+        show_how_to_crop = viewFragments.findViewById(R.id.show_how_to_crop);
 
         // set startup values
         pageTitle = ("Scan receipts");
@@ -101,15 +122,30 @@ public class AddByImage extends Fragment {
             }else{
                 try {
                     selected_image_bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selected_image_uri);
-                    String textFromImage = getTextFromImage(selected_image_bitmap);
-                    if (textFromImage != null) {
+                    String textFromImage = "";
+                    if (getTextFromImage(selected_image_bitmap)) {
+                        Log.e("errnos x1", String.valueOf(productsXXX.size()));
+                        Log.e("errnos x2", String.valueOf(priceXXX.size()));
+                        for (int priceIndex = 0; priceIndex < productsXXX.size(); priceIndex++) {
+                            if (priceIndex >= productsXXX.size()) {
+                                continue;
+                            }
+                            if (priceIndex < priceXXX.size()) {
+                                textFromImage += productsXXX.get(priceIndex) + "\n$" + priceXXX.get(priceIndex) + "\n";
+                            }
+                        }
+                    }
+
+//                    Log.e("errnos",productsXXX.toString());
+//                    Log.e("errnos",textFromImage);
+                    if (!textFromImage.equals("")) {
                         Intent intent = new Intent(activity, ProductsFromImage.class);
                         intent.putExtra("AllTextFromImage", textFromImage);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("errnos intent by add by image", e.toString());
                 }
             }
         });
@@ -134,14 +170,6 @@ public class AddByImage extends Fragment {
         return viewFragments;
     }
 
-    public void cropperActivity(Uri image_uri){
-        if (image_uri != null){
-            Intent intent = new Intent(activity, CropperActivity.class);
-            intent.putExtra("IMG_URI", image_uri);
-            startActivityForResult(intent, 10118);
-        }
-    }
-
     private void pickCamera() {
         try {
             ContentValues values = new ContentValues();
@@ -153,42 +181,199 @@ public class AddByImage extends Fragment {
 
             startActivityForResult(cameraIntent, 10119);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("errnos", e.toString());
         }
     }
 
-    private String getTextFromImage(Bitmap selected_image_bitmap) {
+    public void cropperActivity(Uri image_uri) {
+        if (image_uri != null) {
+            show_how_to_crop.setVisibility(View.VISIBLE);
+            goForCropOkayButton.setOnClickListener(view -> {
+                show_how_to_crop.setVisibility(View.GONE);
+                Intent intent = new Intent(activity, CropperActivity.class);
+                intent.putExtra("IMG_URI", image_uri);
+                startActivityForResult(intent, 10118);
+            });
+        }
+    }
+
+    private Boolean getTextFromImage(Bitmap selected_image_bitmap) {
+        Boolean result = false;
         TextRecognizer recognizer = new TextRecognizer.Builder(activity).build();
         if (!recognizer.isOperational()) {
             Toast.makeText(activity, "Text Recognizer is not working...", Toast.LENGTH_SHORT).show();
         } else {
             Frame frame = new Frame.Builder().setBitmap(selected_image_bitmap).build();
-            SparseArray<TextBlock> textBlockSparseArray = recognizer.detect(frame);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < textBlockSparseArray.size(); i++) {
-                TextBlock textBlock = textBlockSparseArray.valueAt(i);
-                stringBuilder.append(textBlock.getValue());
-                stringBuilder.append("\n");
+            SparseArray<TextBlock> textBlocks = recognizer.detect(frame);
+            String blocks = "";
+            String lines = "";
+            String words = "";
+            for (int index = 0; index < textBlocks.size(); index++) {
+                //extract scanned text blocks here
+                TextBlock tBlock = textBlocks.valueAt(index);
+                blocks = blocks + tBlock.getValue() + "\n\n";
+                for (Text line : tBlock.getComponents()) {
+                    //extract scanned text lines here
+                    if (!line.getValue().endsWith("%")) {
+                        lines = lines + line.getValue() + "\n";
+                    }
+                    for (Text element : line.getComponents()) {
+                        //extract scanned text words here
+                        if (!element.getValue().endsWith("%")) {
+                            words = words + element.getValue() + " ";
+                        }
+                    }
+                    words = words + "\n";
+                }
             }
-            if (((stringBuilder.toString().replace(" ", "")).replace("\n", "")).length() < 1) {
-                Toast.makeText(activity, "No texts found on the image", Toast.LENGTH_SHORT).show();
-                return null;
+
+            lines = lines.replace("$", "");
+            lines = lines.replace("€", "");
+            String products = lines.toLowerCase();
+            String prices = lines.toLowerCase();
+
+            String[] productsX = products.split("desc");
+            if (productsX.length > 1) {
+                products = productsX[1];
+            } else {
+                productsX = products.split("item");
+                if (productsX.length > 1) {
+                    products = productsX[1];
+                } else {
+                    productsX = products.split("name");
+                    if (productsX.length > 1) {
+                        products = productsX[1];
+                    }
+
+                }
             }
-            return stringBuilder.toString();
+            productsX = products.split("subtotal");
+            if (productsX.length > 1) {
+                products = productsX[0];
+            } else {
+                productsX = products.split("total");
+                if (productsX.length > 1) {
+                    products = productsX[0];
+                } else {
+                    productsX = products.split("sum");
+                    if (productsX.length > 1) {
+                        products = productsX[0];
+                    } else {
+                        productsX = products.split("vat");
+                        if (productsX.length > 1) {
+                            products = productsX[0];
+                        } else {
+                            productsX = products.split("iva");
+                            if (productsX.length > 1) {
+                                products = productsX[0];
+                            } else {
+                                productsX = products.split("prezzo");
+                                if (productsX.length > 1) {
+                                    products = productsX[0];
+                                } else {
+                                    productsX = products.split("price");
+                                    if (productsX.length > 1) {
+                                        products = productsX[0];
+                                    } else {
+                                        productsX = products.split("ammoun");
+                                        if (productsX.length > 1) {
+                                            products = productsX[0];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            String[] pricesX = prices.split("pric");
+            if (pricesX.length > 1) {
+                prices = pricesX[1];
+            } else {
+                pricesX = prices.split("prez");
+                if (pricesX.length > 1) {
+                    prices = pricesX[1];
+                } else {
+                    pricesX = prices.split("ammoun");
+                    if (pricesX.length > 1) {
+                        prices = pricesX[1];
+                    } else {
+                        pricesX = prices.split("cost");
+                        if (pricesX.length > 1) {
+                            prices = pricesX[1];
+                        }
+                    }
+                }
+            }
+
+
+            String[] pricesC = prices.split("\n");
+            for (String s : pricesC) {
+                if (periodForDecimal) {
+                    s = s.replace(",", "");
+                } else {
+                    s = s.replace(".", "");
+                    s = s.replace(",", ".");
+                }
+                s = s.replaceAll(" +", "");
+                if (!s.endsWith("%") && isNumeric(s)) {
+                    priceXXX.add(s);
+                }
+            }
+
+
+            String[] productsXX = products.split("\n");
+            Boolean skip = true;
+            for (String s : productsXX) {
+                if (skip) {
+                    skip = false;
+                    continue;
+                }
+                s = s.replaceAll(" +", " ");
+                String sn = s.replaceAll(" +", "");
+                if (periodForDecimal) {
+                    sn = sn.replace(",", "");
+                } else {
+                    sn = sn.replace(".", "");
+                    sn = sn.replace(",", ".");
+                }
+                if (!isNumeric(sn) && !s.contains("cad ") && !s.contains("iva") && !s.contains("prezzo")) {
+                    productsXXX.add(s);
+                }
+            }
+
+
+            result = true;
+
+
         }
-        return null;
+        return result;
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public  void imageCropped(Uri image_uri){
-        if(image_uri == null){
+    public  void imageCropped(Uri image_uri) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Choose one");
+        builder.setMessage("What is equivalent of decimal in the picture?");
+        builder.setPositiveButton("Comma", (dialogInterface, i) -> {
+            periodForDecimal = false;
+            new Settings(activity).toast("Comma is set as decimal point for this image", null);
+        });
+        builder.setNegativeButton("Period", (dialogInterface, i) -> {
+            periodForDecimal = true;
+            new Settings(activity).toast("Period or Dot is set as decimal point for this image", null);
+        });
+        builder.setCancelable(false);
+        builder.create().show();
+        if (image_uri == null) {
             Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show();
             button_recrop.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 image_crop_view.setImageDrawable(activity.getDrawable(R.drawable.ic_baseline_add_a_photo_24));
             }
-        }else{
+        } else {
             button_recrop.setVisibility(View.VISIBLE);
             image_crop_view.setImageURI(image_uri);
             selected_image_uri = image_uri;

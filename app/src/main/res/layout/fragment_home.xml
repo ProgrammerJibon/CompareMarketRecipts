@@ -45,6 +45,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/secondary"
                 android:padding="16dp"
+                android:textColor="@color/white"
                 android:text="Crop"
                 android:visibility="gone" />
 
@@ -54,9 +55,44 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
+                android:textColor="@color/white"
                 android:backgroundTint="@color/gray"
                 android:padding="16dp"
                 android:text="Next" />
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/show_how_to_crop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="#B3000000"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/where_and_how_to_crop" />
+
+        <Button
+            android:id="@+id/goForCropOkayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/primary"
+            android:text="Okay"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 </RelativeLayout>
