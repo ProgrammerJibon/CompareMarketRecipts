@@ -108,6 +108,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
 
 
             if (position % 7 == 0) {
+                templateView.setVisibility(View.VISIBLE);
                 MobileAds.initialize(activity);
                 AdLoader adLoader = new AdLoader.Builder(activity, "ca-app-pub-6695709429891253/9897159758")
                         .forNativeAd(nativeAd -> {
@@ -119,20 +120,23 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                         .build();
 
                 adLoader.loadAd(new AdRequest.Builder().build());
-            }
-
-
-            if (position % 10 == 0) {
-                mAdView2.setVisibility(View.VISIBLE);
-                MobileAds.initialize(activity, initializationStatus -> {
-
-                });
-
-                AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView2.loadAd(adRequest);
             } else {
-                mAdView2.setVisibility(View.GONE);
+                templateView.setVisibility(View.GONE);
             }
+
+//
+//
+//            if (position % 10 == 0) {
+//                mAdView2.setVisibility(View.VISIBLE);
+//                MobileAds.initialize(activity, initializationStatus -> {
+//
+//                });
+//
+//                AdRequest adRequest = new AdRequest.Builder().build();
+//                mAdView2.loadAd(adRequest);
+//            } else {
+//                mAdView2.setVisibility(View.GONE);
+//            }
 
         } catch (Exception e) {
             Log.e("errnos", e.toString());
