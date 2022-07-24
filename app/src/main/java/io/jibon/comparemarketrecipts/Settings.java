@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,6 +72,9 @@ public class Settings {
                         if (result.getInt("addProductItem") > 0) {
                             if (finalConvertView != null) {
                                 finalConvertView.setAlpha(0.3F);
+                                finalConvertView.setClickable(false);
+                                finalConvertView.setFocusable(false);
+                                finalConvertView.setEnabled(false);
                             }
                             new Settings(activity).toast(productName + " added to " + shop_name + " for price comparing", R.drawable.ic_baseline_done_24);
                         }
@@ -166,11 +170,11 @@ public class Settings {
                 ((ImageView) view.findViewById(R.id.Custom_toast_icon)).setImageResource(drawable);
             }
             Toast toast = new Toast(activity.getApplicationContext());
-            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setDuration(Toast.LENGTH_SHORT);
             toast.setView(view);
             toast.show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                new Settings(activity).vibrate(50);
+                new Settings(activity).vibrate(100);
             }
             return true;
         } catch (Exception e) {

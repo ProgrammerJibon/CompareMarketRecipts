@@ -45,11 +45,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA,
             Manifest.permission.INTERNET,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.VIBRATE,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.VIBRATE
     };
     int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 255;
 

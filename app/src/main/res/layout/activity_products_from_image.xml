@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:background="#F8F8F8"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="@color/halka_kala"
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/additemtocolon"
@@ -72,8 +72,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/addingdone"
-            android:layout_marginHorizontal="8dp"
-            android:background="#F1F1F1"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp"
+            android:background="@color/halka_sada"
             android:orientation="horizontal">
 
             <EditText
@@ -84,6 +85,7 @@
                 android:background="@color/transparent"
                 android:hint="Product Name"
                 android:textColorHint="@color/gray"
+                android:textColor="@color/primary"
                 android:inputType="text"
                 android:padding="16dp" />
 
@@ -93,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:textColorHint="@color/gray"
+                android:textColor="@color/primary"
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:hint="Price"
@@ -124,6 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
+        android:background="@color/halka_sada"
         android:visibility="gone"
         android:layout_alignParentBottom="true">
 
@@ -134,6 +138,8 @@
             android:gravity="left"
             android:padding="16dp"
             android:text="Please Enter Shop Name"
+            android:textColor="@color/white"
+            android:background="@color/gray"
             android:textIsSelectable="true" />
 
         <EditText
@@ -141,8 +147,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/shop_name_hint"
-            android:background="@color/transparent"
+            android:background="@color/halka_kala"
             android:hint="Ex: Barisal Super Shop"
+            android:focusedByDefault="true"
             android:padding="16dp" />
 
 
@@ -150,18 +157,21 @@
             android:id="@+id/list_shop_names"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:divider="@color/transparent"
             android:layout_below="@+id/edit_text_shop_name"
             android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:focusable="true"
+            android:descendantFocusability="beforeDescendants"
+            android:divider="@color/transparent"
             android:padding="16dp" />
     </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/editTextShopNameChangerLoading"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:indeterminate="true" />
 
 

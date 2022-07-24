@@ -8,4 +8,5 @@
     <color name="text">#FFFFFFFF</color>
     <color name="transparent">#00FF0045</color>
     <color name="halka_sada">#B2FFFFFF</color>
+    <color name="halka_kala">#4D000000</color>
 </resources>

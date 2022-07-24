@@ -123,6 +123,7 @@ public class AddByImage extends Fragment {
                 try {
                     selected_image_bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selected_image_uri);
                     String textFromImage = "";
+                    priceXXX = new ArrayList<>(); productsXXX = new ArrayList<>();
                     if (getTextFromImage(selected_image_bitmap)) {
                         Log.e("errnos x1", String.valueOf(productsXXX.size()));
                         Log.e("errnos x2", String.valueOf(priceXXX.size()));
@@ -215,7 +216,7 @@ public class AddByImage extends Fragment {
                 blocks = blocks + tBlock.getValue() + "\n\n";
                 for (Text line : tBlock.getComponents()) {
                     //extract scanned text lines here
-                    if (!line.getValue().endsWith("%")) {
+                    if (!line.getValue().endsWith("%") && !line.getValue().startsWith("j ")) {
                         lines = lines + line.getValue() + "\n";
                     }
                     for (Text element : line.getComponents()) {
@@ -227,7 +228,6 @@ public class AddByImage extends Fragment {
                     words = words + "\n";
                 }
             }
-
             lines = lines.replace("$", "");
             lines = lines.replace("€", "");
             String products = lines.toLowerCase();
@@ -235,20 +235,24 @@ public class AddByImage extends Fragment {
 
             String[] productsX = products.split("desc");
             if (productsX.length > 1) {
-                products = productsX[1];
+                products = "desc"+productsX[1];
             } else {
                 productsX = products.split("item");
                 if (productsX.length > 1) {
-                    products = productsX[1];
+                    products = "item"+productsX[1];
                 } else {
                     productsX = products.split("name");
                     if (productsX.length > 1) {
-                        products = productsX[1];
+                        products = "name"+productsX[1];
+                    }else {
+                        productsX = products.split("deco");
+                        if (productsX.length > 1) {
+                            products = "deco"+productsX[1];
+                        }
                     }
-
                 }
             }
-            productsX = products.split("subtotal");
+            productsX = products.split("subtot");
             if (productsX.length > 1) {
                 products = productsX[0];
             } else {
@@ -279,6 +283,21 @@ public class AddByImage extends Fragment {
                                         productsX = products.split("ammoun");
                                         if (productsX.length > 1) {
                                             products = productsX[0];
+                                        }else {
+                                            productsX = products.split("eur");
+                                            if (productsX.length > 1) {
+                                                products = productsX[0];
+                                            }else {
+                                                productsX = products.split("usd");
+                                                if (productsX.length > 1) {
+                                                    products = productsX[0];
+                                                }else {
+                                                    productsX = products.split("sub tot");
+                                                    if (productsX.length > 1) {
+                                                        products = productsX[0];
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -287,6 +306,41 @@ public class AddByImage extends Fragment {
                     }
                 }
             }
+
+
+
+            String[] productsXX = products.split("\n");
+            boolean skip = true;
+            for (String s : productsXX) {
+                s = s.replaceAll(" +", " ");
+                String sn = s.replaceAll(" +", "");
+                sn = sn.replace("j ", "");
+                sn = sn.replace("j", "");
+                sn = sn.replace("x", "");
+                if (periodForDecimal) {
+                    sn = sn.replace(",", "");
+                } else {
+                    sn = sn.replace(".", "");
+                    sn = sn.replace(",", ".");
+                }
+
+                s = s.replaceAll("[^A-Za-z\\s\\d]+", "");
+                if (!isNumeric(sn) && !s.contains("cad ") && !s.contains("iva") && !s.contains("prezzo") && s.length() > 3) {
+                    if (skip) {
+                        if (s.startsWith("desc") || s.startsWith("name") || s.startsWith("item") || s.startsWith("deco")){
+                            continue;
+                        }
+                        skip = false;
+                    }
+                    productsXXX.add(s);
+                }
+
+            }
+
+
+//            Log.e("errnos products name", productsXXX.toString());
+
+
             String[] pricesX = prices.split("pric");
             if (pricesX.length > 1) {
                 prices = pricesX[1];
@@ -318,37 +372,28 @@ public class AddByImage extends Fragment {
                 }
                 s = s.replaceAll(" +", "");
                 if (!s.endsWith("%") && isNumeric(s)) {
-                    priceXXX.add(s);
+                    if (Double.parseDouble(s) < 999.99 && !isInteger(s)){
+                        priceXXX.add(s);
+                    }
                 }
             }
 
-
-            String[] productsXX = products.split("\n");
-            Boolean skip = true;
-            for (String s : productsXX) {
-                if (skip) {
-                    skip = false;
-                    continue;
-                }
-                s = s.replaceAll(" +", " ");
-                String sn = s.replaceAll(" +", "");
-                if (periodForDecimal) {
-                    sn = sn.replace(",", "");
-                } else {
-                    sn = sn.replace(".", "");
-                    sn = sn.replace(",", ".");
-                }
-                if (!isNumeric(sn) && !s.contains("cad ") && !s.contains("iva") && !s.contains("prezzo")) {
-                    productsXXX.add(s);
-                }
-            }
-
+//            Log.e("errnos products prices", priceXXX.toString());
 
             result = true;
 
 
         }
         return result;
+    }
+
+    public  boolean isInteger(String str){
+        try {
+            return Integer.parseInt(str) > 0;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -370,17 +415,13 @@ public class AddByImage extends Fragment {
         if (image_uri == null) {
             Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show();
             button_recrop.setVisibility(View.GONE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                image_crop_view.setImageDrawable(activity.getDrawable(R.drawable.ic_baseline_add_a_photo_24));
-            }
+            image_crop_view.setImageDrawable(activity.getDrawable(R.drawable.ic_baseline_add_a_photo_24));
         } else {
             button_recrop.setVisibility(View.VISIBLE);
             image_crop_view.setImageURI(image_uri);
             selected_image_uri = image_uri;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                button_next.setBackgroundTintList(ColorStateList.valueOf(activity.getColor(R.color.primary)));
-                image_crop_view.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
-            }
+            button_next.setBackgroundTintList(ColorStateList.valueOf(activity.getColor(R.color.primary)));
+            image_crop_view.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         }
 
     }
@@ -390,8 +431,9 @@ public class AddByImage extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (resultCode == -1 && requestCode == 10118) {
+                assert data != null;
                 String result = data.getStringExtra("RESULT");
-                if (result != null) {
+                if (result != null && !(result.equals(""))) {
                     if (Uri.parse(result) != null) {
                         imageCropped(Uri.parse(result));
                     }
@@ -399,6 +441,13 @@ public class AddByImage extends Fragment {
             } else if (resultCode == -1 && requestCode == 10119) {
                 if (dest_uri != null){
                     cropperActivity(dest_uri);
+                }
+            }else if (resultCode == -2 && requestCode == 10118) {
+                assert data != null;
+                Bundle resultExtras = data.getExtras();
+                if (resultExtras != null){
+                    String result = resultExtras.getString("RESULTX");
+                    imageCropped(Uri.parse(result));
                 }
             }
         }catch (Exception e){

@@ -87,4 +87,11 @@
             android:text="00/00/0000"
             android:textColor="@color/secondary" />
     </LinearLayout>
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-6695709429891253/9865370166" />
 </LinearLayout>

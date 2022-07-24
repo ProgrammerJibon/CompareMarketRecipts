@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/mainActivityTitle"
         android:layout_below="@id/rand1"
-        android:background="#C5C5C5"
+        android:background="@color/halka_kala"
         android:padding="16dp"
         android:text="Welcome back"
         android:textColor="@color/white"

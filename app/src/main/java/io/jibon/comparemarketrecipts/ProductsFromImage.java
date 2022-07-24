@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -209,6 +210,9 @@ public class ProductsFromImage extends AppCompatActivity {
                                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
+                                ((TextView) view.findViewById(android.R.id.text1)).setTextColor(Color.GRAY);
+                                ((TextView) view.findViewById(android.R.id.text2)).setTextColor(activity.getColor(R.color.gray));
+
                                 try {
                                     text1.setText(getAllShopName.getJSONObject(position).getString("shop_name"));
                                     text2.setText(getAllShopName.getJSONObject(position).getString("city") + ", " + getAllShopName.getJSONObject(position).getString("country"));
@@ -344,6 +348,8 @@ public class ProductsFromImage extends AppCompatActivity {
                     if (result.has("getSimilar")) {
                         BaseAdapter baseAdapter = new SameProductListAdapter(activity, product_name_price_list, result.getJSONObject("getSimilar"), shop_id, shop_name);
                         listViewForAddingItemsOnServer.setAdapter(baseAdapter);
+                        listViewForAddingItemsOnServer.setItemsCanFocus(true);
+
                     }
                 }
             } catch (Exception e) {

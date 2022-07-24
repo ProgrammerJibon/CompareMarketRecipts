@@ -71,8 +71,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="#B3000000"
-        android:clickable="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true">
 
         <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
@@ -82,17 +82,33 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:src="@drawable/where_and_how_to_crop" />
-
-        <Button
-            android:id="@+id/goForCropOkayButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/primary"
-            android:text="Okay"
-            android:textColor="@color/white" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@color/halka_kala"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:layout_margin="16dp"
+                android:textColor="@color/white"
+                android:text="Must be cropped only the products and prices part only"/>
+
+            <Button
+                android:id="@+id/goForCropOkayButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary"
+                android:text="Okay"
+                android:layout_margin="16dp"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>
