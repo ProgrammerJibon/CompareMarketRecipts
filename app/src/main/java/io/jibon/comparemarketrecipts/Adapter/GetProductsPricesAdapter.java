@@ -3,20 +3,20 @@ package io.jibon.comparemarketrecipts.Adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,6 +66,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                 itemsViewHolder.setOfDate = convertView.findViewById(R.id.date);
                 itemsViewHolder.setOfTime = convertView.findViewById(R.id.time);
                 itemsViewHolder.adView2 = convertView.findViewById(R.id.adView2);
+                itemsViewHolder.templateView = convertView.findViewById(R.id.my_template);
                 itemsViewHolder.shopLocation = convertView.findViewById(R.id.shopLocation);
 
                 convertView.setTag(itemsViewHolder);
@@ -80,6 +81,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                     time = itemsViewHolder.setOfTime,
                     shopLocation = itemsViewHolder.shopLocation;
             AdView mAdView2 = itemsViewHolder.adView2;
+            TemplateView templateView = itemsViewHolder.templateView;
 
             productName.setText(((JSONObject) productsPrices.get(position)).getString("item_name"));
             productsPrice.setText(((JSONObject) productsPrices.get(position)).getString("item_price"));
@@ -104,7 +106,23 @@ public class GetProductsPricesAdapter extends BaseAdapter {
             date.setText(sdf.format(resultdate));
             time.setText(stf.format(resultdate));
 
-            if (position % 5 == 0){
+
+            if (position % 7 == 0) {
+                MobileAds.initialize(activity);
+                AdLoader adLoader = new AdLoader.Builder(activity, "ca-app-pub-6695709429891253/9897159758")
+                        .forNativeAd(nativeAd -> {
+                            NativeTemplateStyle styles = new
+                                    NativeTemplateStyle.Builder().withMainBackgroundColor(new ColorDrawable(activity.getColor(R.color.white))).build();
+                            templateView.setStyles(styles);
+                            templateView.setNativeAd(nativeAd);
+                        })
+                        .build();
+
+                adLoader.loadAd(new AdRequest.Builder().build());
+            }
+
+
+            if (position % 10 == 0) {
                 mAdView2.setVisibility(View.VISIBLE);
                 MobileAds.initialize(activity, initializationStatus -> {
 
@@ -112,7 +130,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
 
                 AdRequest adRequest = new AdRequest.Builder().build();
                 mAdView2.loadAd(adRequest);
-            }else{
+            } else {
                 mAdView2.setVisibility(View.GONE);
             }
 
@@ -126,6 +144,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
     public static class ItemsViewHolder {
         public TextView productName, productPrice, shopName, setOfDate, shopLocation, setOfTime;
         private AdView adView2;
+        private TemplateView templateView;
     }
 
 }
