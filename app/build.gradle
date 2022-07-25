@@ -13,8 +13,8 @@ android {
         applicationId "io.jibon.comparemarketrecipts"
         minSdk 23
         targetSdk 32
-        versionCode 19
-        versionName "v.1.0.19"
+        versionCode 32
+        versionName "v.1.0.32"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

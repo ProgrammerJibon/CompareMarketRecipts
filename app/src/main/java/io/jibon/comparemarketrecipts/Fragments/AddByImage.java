@@ -9,7 +9,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -125,8 +124,6 @@ public class AddByImage extends Fragment {
                     String textFromImage = "";
                     priceXXX = new ArrayList<>(); productsXXX = new ArrayList<>();
                     if (getTextFromImage(selected_image_bitmap)) {
-                        Log.e("errnos x1", String.valueOf(productsXXX.size()));
-                        Log.e("errnos x2", String.valueOf(priceXXX.size()));
                         for (int priceIndex = 0; priceIndex < productsXXX.size(); priceIndex++) {
                             if (priceIndex >= productsXXX.size()) {
                                 continue;
@@ -338,7 +335,7 @@ public class AddByImage extends Fragment {
             }
 
 
-//            Log.e("errnos products name", productsXXX.toString());
+            Log.e("errnos products name", productsXXX.toString());
 
 
             String[] pricesX = prices.split("pric");
@@ -378,7 +375,7 @@ public class AddByImage extends Fragment {
                 }
             }
 
-//            Log.e("errnos products prices", priceXXX.toString());
+            Log.e("errnos products prices", priceXXX.toString());
 
             result = true;
 

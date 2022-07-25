@@ -4,18 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -71,9 +66,6 @@ public class SameProductListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
-            if (convertView != null){
-                return  convertView;
-            }
             PlayersViewHolder playersViewHolder;
             if (convertView == null) {
                 LayoutInflater layoutInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -123,6 +115,8 @@ public class SameProductListAdapter extends BaseAdapter {
                 };
                 gridview_for_similar_data_types.setAdapter(arrayAdapter);
 
+                gridview_for_similar_data_types.setSelection(stringArrayList.size() - 1, true);
+
                 View finalConvertView = convertView;
                 gridview_for_similar_data_types_price_add_button.setOnClickListener(view -> {
                     try {
@@ -131,7 +125,7 @@ public class SameProductListAdapter extends BaseAdapter {
                         gridview_for_similar_data_types.setClickable(false);
                         gridview_for_similar_data_types.setEnabled(false);
                         new Settings(activity).addItemsPricesOfCity(progressBar, shop_id, stringArrayList.get(gridview_for_similar_data_types.getSelectedItemPosition()), String.valueOf(gridview_for_similar_data_types_price.getText()), shop_name, finalConvertView);
-                    }catch (Exception error){
+                    } catch (Exception error) {
                         Log.e("errnos add button cliker", error.toString());
                     }
                 });

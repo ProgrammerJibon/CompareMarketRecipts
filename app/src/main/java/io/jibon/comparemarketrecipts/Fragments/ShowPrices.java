@@ -119,10 +119,13 @@ public class ShowPrices extends Fragment {
                 ArrayAdapter<String> countryArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, countries_names);
                 countrySelector.setAdapter(countryArrayAdapter);
 
+                countrySelector.setSelection(new Settings(activity).setPrefId("country_id", null));
+
                 countrySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                         try {
+                            new Settings(activity).setPrefId("country_id", position);
                             int shop_country_id = -1;
                             if (position != 0) {
                                 selectedCountry = countries.getJSONObject(position - 1).getString("name");
@@ -142,11 +145,14 @@ public class ShowPrices extends Fragment {
                             ArrayAdapter<String> cityArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, states_names);
                             citySelector.setAdapter(cityArrayAdapter);
 
+                            citySelector.setSelection(new Settings(activity).setPrefId("city_id", null));
+
                             citySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                     try {
                                         if (i != 0) {
+                                            new Settings(activity).setPrefId("city_id", i);
                                             selectedCity = states_names.get(i);
 
                                         } else {

@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Objects;
 
 public class Settings {
     public SharedPreferences preferences;
@@ -32,6 +33,8 @@ public class Settings {
     public Settings(Activity activity) {
         this.activity = activity;
         this.JSONLINK = "https://api.jibon.io/";
+        this.preferences = PreferenceManager
+                .getDefaultSharedPreferences(activity);
     }
 
     public String linkForJson(String extra) {
@@ -121,6 +124,46 @@ public class Settings {
             preferencesEditor.commit();
         }
         return cookie;
+    }
+
+    public int setPrefId(String id, Integer data) {
+        int result = 0;
+        id = "INT_" + id;
+        if (data != null) {
+            preferencesEditor = preferences.edit();
+            preferencesEditor.putInt(id, data);
+            preferencesEditor.commit();
+        }
+        if (preferences.getInt(id, 0) != 0) {
+            result = preferences.getInt(id, 0);
+
+        } else {
+            preferencesEditor = preferences.edit();
+            preferencesEditor.putInt(id, 0);
+            preferencesEditor.commit();
+        }
+        return result;
+    }
+
+    public String setPref(String id, String data) {
+        String result = "";
+        id = id;
+        if (data != null) {
+            preferencesEditor = preferences.edit();
+            preferencesEditor.putString(id, data);
+            preferencesEditor.commit();
+        }
+        if (!preferences.getString(id, "0").equals("0")) {
+            result = preferences.getString(id, "0");
+            if (Objects.equals(result, "null") || Objects.equals(result, "")) {
+                result = String.valueOf(0);
+            }
+        } else {
+            preferencesEditor = preferences.edit();
+            preferencesEditor.putString(id, "0");
+            preferencesEditor.commit();
+        }
+        return result;
     }
 
     public JSONObject countries_states() {
