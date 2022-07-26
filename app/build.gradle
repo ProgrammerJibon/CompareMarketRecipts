@@ -3,6 +3,8 @@ plugins {
     id 'com.android.application'
 }
 
+final BUILD_DATE = new Date().format('yyyyMM.ddHHmm')
+final int TIMESTAMP = new Date().getTime()
 
 android {
     compileSdk 32
@@ -13,8 +15,8 @@ android {
         applicationId "io.jibon.comparemarketrecipts"
         minSdk 23
         targetSdk 32
-        versionCode 32
-        versionName "v.1.0.32"
+        versionCode TIMESTAMP
+        versionName "v.1.0.${BUILD_DATE}"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -53,4 +55,9 @@ dependencies {
     implementation project(':nativetemplates')
 
 
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
