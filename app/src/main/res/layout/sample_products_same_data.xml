@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:ignore="all">
 
     <ProgressBar
@@ -21,7 +22,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp"
         android:background="@color/transparent"
-        android:backgroundTint="@color/gray"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
@@ -40,8 +40,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/gridview_for_similar_data_types"
             android:gravity="center"
+            android:backgroundTint="@color/primary"
             tools:listitem="@android:layout/simple_list_item_1"
             android:verticalSpacing="8dp"/>
+
         <EditText
             android:id="@+id/gridview_for_similar_data_types_price"
             android:layout_width="0dp"
@@ -52,8 +54,10 @@
             android:inputType="numberDecimal"
             android:padding="8dp"
             android:selectAllOnFocus="true"
+            android:backgroundTint="@color/primary"
+            android:focusable="true"
             android:layout_marginHorizontal="8dp"
-            android:textColorHint="@color/gray"/>
+            android:textColorHint="@color/gray" />
         <Button
             android:id="@+id/gridview_for_similar_data_types_price_add_button"
             android:layout_width="0dp"

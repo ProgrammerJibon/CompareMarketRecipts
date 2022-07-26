@@ -11,12 +11,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -61,29 +62,28 @@ public class GetProductsPricesAdapter extends BaseAdapter {
             if (convertView == null) {
                 LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = layoutInflater.inflate(R.layout.sample_get_products_prices_adapter, viewGroup, false);
-                itemsViewHolder = new ItemsViewHolder();
-                itemsViewHolder.productName = convertView.findViewById(R.id.productName);
-                itemsViewHolder.productPrice = convertView.findViewById(R.id.productPrice);
-                itemsViewHolder.shopName = convertView.findViewById(R.id.shopName);
-                itemsViewHolder.setOfDate = convertView.findViewById(R.id.date);
-                itemsViewHolder.setOfTime = convertView.findViewById(R.id.time);
+                itemsViewHolder = new ItemsViewHolder(activity);
+                itemsViewHolder.setShowAds(((JSONObject) productsPrices.get(position)).getBoolean("showAds"));
+                itemsViewHolder.setProductName(convertView.findViewById(R.id.productName));
+                itemsViewHolder.setProductPrice(convertView.findViewById(R.id.productPrice));
+                itemsViewHolder.setShopName(convertView.findViewById(R.id.shopName));
+                itemsViewHolder.setSetOfDate(convertView.findViewById(R.id.date));
+                itemsViewHolder.setSetOfTime(convertView.findViewById(R.id.time));
 //                itemsViewHolder.adView2 = convertView.findViewById(R.id.adView2);
-                itemsViewHolder.templateView = convertView.findViewById(R.id.my_template);
-                itemsViewHolder.shopLocation = convertView.findViewById(R.id.shopLocation);
-
+                itemsViewHolder.setTemplateView(convertView.findViewById(R.id.my_template));
+                itemsViewHolder.setShopLocation(convertView.findViewById(R.id.shopLocation));
+                itemsViewHolder.loadTheAd();
                 convertView.setTag(itemsViewHolder);
             } else {
                 itemsViewHolder = (ItemsViewHolder) convertView.getTag();
             }
 
-            TextView productName = itemsViewHolder.productName,
-                    productsPrice = itemsViewHolder.productPrice,
-                    shopName = itemsViewHolder.shopName,
-                    date = itemsViewHolder.setOfDate,
-                    time = itemsViewHolder.setOfTime,
-                    shopLocation = itemsViewHolder.shopLocation;
-//            AdView mAdView2 = itemsViewHolder.adView2;
-            TemplateView templateView = itemsViewHolder.templateView;
+            TextView productName = itemsViewHolder.getProductName(),
+                    productsPrice = itemsViewHolder.getProductPrice(),
+                    shopName = itemsViewHolder.getShopName(),
+                    date = itemsViewHolder.getSetOfDate(),
+                    time = itemsViewHolder.getSetOfTime(),
+                    shopLocation = itemsViewHolder.getShopLocation();
 
             productName.setText(((JSONObject) productsPrices.get(position)).getString("item_name"));
             productsPrice.setText(((JSONObject) productsPrices.get(position)).getString("item_price"));
@@ -110,49 +110,6 @@ public class GetProductsPricesAdapter extends BaseAdapter {
             time.setText(stf.format(resultdate));
 
 
-            if (position % 7 == 0) {
-
-                MobileAds.initialize(activity);
-                AdLoader adLoader = new AdLoader.Builder(activity, "ca-app-pub-6695709429891253/9897159758") //ca-app-pub-3940256099942544/2247696110
-                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                            @Override
-                            public void onNativeAdLoaded(NativeAd nativeAd) {
-                                NativeTemplateStyle styles = new
-                                        NativeTemplateStyle.Builder()
-                                        .withMainBackgroundColor(new ColorDrawable(activity.getColor(R.color.white)))
-                                        .build();
-                                templateView.setStyles(styles);
-                                templateView.setNativeAd(nativeAd);
-                            }
-
-                        })
-                        .withAdListener(new AdListener() {
-                            @Override
-                            public void onAdLoaded() {
-                                super.onAdLoaded();
-                                templateView.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAdClosed() {
-                                super.onAdClosed();
-                                templateView.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onAdFailedToLoad(LoadAdError adError) {
-                                templateView.setVisibility(View.GONE);
-                                Log.e("errnos addError", adError.getMessage());
-                            }
-                        })
-                        .build();
-
-                adLoader.loadAds(new AdRequest.Builder().build(), 5);
-
-            }
-
-
-
 //            if (position % 10 == 0) {
 //                mAdView2.setVisibility(View.VISIBLE);
 //                MobileAds.initialize(activity, initializationStatus -> {
@@ -173,9 +130,120 @@ public class GetProductsPricesAdapter extends BaseAdapter {
 
 
     public static class ItemsViewHolder {
+        private final Activity activity;
         public TextView productName, productPrice, shopName, setOfDate, shopLocation, setOfTime;
-        private AdView adView2;
-        private TemplateView templateView;
+        public TemplateView templateView;
+        public boolean showAds;
+
+        public ItemsViewHolder(Activity activity) {
+            this.activity = activity;
+        }
+
+        public TextView getProductName() {
+            return productName;
+        }
+
+        public void setProductName(TextView productName) {
+            this.productName = productName;
+        }
+
+        public TextView getProductPrice() {
+            return productPrice;
+        }
+
+        public void setProductPrice(TextView productPrice) {
+            this.productPrice = productPrice;
+        }
+
+        public TextView getShopName() {
+            return shopName;
+        }
+
+        public void setShopName(TextView shopName) {
+            this.shopName = shopName;
+        }
+
+        public TextView getSetOfDate() {
+            return setOfDate;
+        }
+
+        public void setSetOfDate(TextView setOfDate) {
+            this.setOfDate = setOfDate;
+        }
+
+        public TextView getShopLocation() {
+            return shopLocation;
+        }
+
+        public void setShopLocation(TextView shopLocation) {
+            this.shopLocation = shopLocation;
+        }
+
+        public TextView getSetOfTime() {
+            return setOfTime;
+        }
+
+        public void setSetOfTime(TextView setOfTime) {
+            this.setOfTime = setOfTime;
+        }
+
+        public TemplateView getTemplateView() {
+            return templateView;
+        }
+
+        public void setTemplateView(TemplateView templateView) {
+            this.templateView = templateView;
+        }
+
+        public boolean isShowAds() {
+            return showAds;
+        }
+
+        public void setShowAds(boolean showAds) {
+            this.showAds = showAds;
+        }
+
+        public Activity getActivity() {
+            return activity;
+        }
+
+        public void loadTheAd() {
+            if (isShowAds()) {
+
+                MobileAds.initialize(activity);
+                AdLoader adLoader = new AdLoader.Builder(activity, "ca-app-pub-6695709429891253/9897159758") //ca-app-pub-3940256099942544/2247696110
+                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                            @Override
+                            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                                NativeTemplateStyle styles = new
+                                        NativeTemplateStyle.Builder()
+                                        .withMainBackgroundColor(new ColorDrawable(activity.getColor(R.color.white)))
+                                        .build();
+                                getTemplateView().setStyles(styles);
+                                getTemplateView().setNativeAd(nativeAd);
+                            }
+
+                        })
+                        .withAdListener(new AdListener() {
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                getTemplateView().setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                                Log.e("errnos addError", adError.getMessage());
+                            }
+                        })
+                        .build();
+
+                adLoader.loadAd(new AdRequest.Builder().build());
+
+            } else {
+                getTemplateView().setVisibility(View.GONE);
+            }
+        }
     }
 
 }

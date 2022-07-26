@@ -144,15 +144,14 @@ public class ShowPrices extends Fragment {
                             }
                             ArrayAdapter<String> cityArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, states_names);
                             citySelector.setAdapter(cityArrayAdapter);
-
-                            citySelector.setSelection(new Settings(activity).setPrefId("city_id", null));
+                            citySelector.setSelection(new Settings(activity).setPrefId("city_id" + position, null));
 
                             citySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                     try {
                                         if (i != 0) {
-                                            new Settings(activity).setPrefId("city_id", i);
+                                            new Settings(activity).setPrefId("city_id" + position, i);
                                             selectedCity = states_names.get(i);
 
                                         } else {
