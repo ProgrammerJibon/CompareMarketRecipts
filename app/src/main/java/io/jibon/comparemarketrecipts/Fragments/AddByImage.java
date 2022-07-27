@@ -45,7 +45,7 @@ public class AddByImage extends Fragment {
 
     Button button_next, button_recrop, goForCropOkayButton;
     Activity activity;
-    ImageView image_crop_view;
+    ImageView get_image_from_gallery_or_camera;
     ActivityResultLauncher<String> mGetContent1;
     Uri selected_image_uri, dest_uri;
     Bitmap selected_image_bitmap;
@@ -98,7 +98,7 @@ public class AddByImage extends Fragment {
         View viewFragments = inflater.inflate(R.layout.fragment_home, container, false);
         // find blocks
         mainActivityTitle = activity.findViewById(R.id.mainActivityTitle);
-        image_crop_view = viewFragments.findViewById(R.id.image_view_crop);
+        get_image_from_gallery_or_camera = viewFragments.findViewById(R.id.get_image_from_gallery_or_camera);
         button_next = viewFragments.findViewById(R.id.button_next);
         button_recrop = viewFragments.findViewById(R.id.button_recrop);
         goForCropOkayButton = viewFragments.findViewById(R.id.goForCropOkayButton);
@@ -148,7 +148,7 @@ public class AddByImage extends Fragment {
             }
         });
 
-        image_crop_view.setOnClickListener(view -> {
+        get_image_from_gallery_or_camera.setOnClickListener(view -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
             dialog.setTitle("Choose an option");
             dialog.setPositiveButton("Gallery", (dialogInterface, i) -> {
@@ -167,6 +167,7 @@ public class AddByImage extends Fragment {
         });
         return viewFragments;
     }
+
 
     private void pickCamera() {
         try {
@@ -369,7 +370,7 @@ public class AddByImage extends Fragment {
                 }
                 s = s.replaceAll(" +", "");
                 if (!s.endsWith("%") && isNumeric(s)) {
-                    if (Double.parseDouble(s) < 999.99 && !isInteger(s)){
+                    if (Double.parseDouble(s) < 999.99 && !isInteger(s) && Double.parseDouble(s) != 10.00 && Double.parseDouble(s) != 22.00) {
                         priceXXX.add(s);
                     }
                 }
@@ -412,16 +413,17 @@ public class AddByImage extends Fragment {
         if (image_uri == null) {
             Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show();
             button_recrop.setVisibility(View.GONE);
-            image_crop_view.setImageDrawable(activity.getDrawable(R.drawable.ic_baseline_add_a_photo_24));
+            get_image_from_gallery_or_camera.setImageDrawable(activity.getDrawable(R.drawable.ic_baseline_add_a_photo_24));
         } else {
             button_recrop.setVisibility(View.VISIBLE);
-            image_crop_view.setImageURI(image_uri);
+            get_image_from_gallery_or_camera.setImageURI(image_uri);
             selected_image_uri = image_uri;
             button_next.setBackgroundTintList(ColorStateList.valueOf(activity.getColor(R.color.primary)));
-            image_crop_view.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            get_image_from_gallery_or_camera.setImageTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         }
 
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

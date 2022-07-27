@@ -29,6 +29,7 @@ import io.jibon.comparemarketrecipts.Settings;
 
 public class SameProductListAdapter extends BaseAdapter {
     public ArrayList<ArrayList> arrayList;
+    public ArrayList<Button> add_button_list;
     public Activity activity;
     public String user_role, shop_id, shop_name;
     public JSONObject resultFromServer;
@@ -40,6 +41,7 @@ public class SameProductListAdapter extends BaseAdapter {
         this.resultFromServer = resultFromServer;
         this.shop_id = shop_id;
         this.shop_name = shop_name;
+        this.add_button_list = new ArrayList<>();
     }
 
     @Override
@@ -76,6 +78,7 @@ public class SameProductListAdapter extends BaseAdapter {
                 playersViewHolder.gridview_for_similar_data_types_price = convertView.findViewById(R.id.gridview_for_similar_data_types_price);
                 playersViewHolder.gridview_for_similar_data_types_price_add_button = convertView.findViewById(R.id.gridview_for_similar_data_types_price_add_button);
 
+                add_button_to_button_list(playersViewHolder.gridview_for_similar_data_types_price_add_button);
                 convertView.setTag(playersViewHolder);
             } else {
                 playersViewHolder = (PlayersViewHolder) convertView.getTag();
@@ -129,51 +132,6 @@ public class SameProductListAdapter extends BaseAdapter {
                         Log.e("errnos add button cliker", error.toString());
                     }
                 });
-//                if (edittext_data.has(String.valueOf(position))){
-//                    gridview_for_similar_data_types_price.setText(edittext_data.getString(String.valueOf(position)));
-//                    Log.e("errnos ld", edittext_data.getString(String.valueOf(position)));
-//                }
-//                gridview_for_similar_data_types_price.addTextChangedListener(new TextWatcher() {
-//                    @Override
-//                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void afterTextChanged(Editable editable) {
-//                        try {
-//                            edittext_data.put(String.valueOf(position),  String.valueOf(gridview_for_similar_data_types_price.getText()));
-//                        } catch (JSONException e) {
-//                            Log.e("errnos ontextchanged", e.toString());
-//                        }
-//                    }
-//                });
-//
-//                gridview_for_similar_data_types.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                    @Override
-//                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                        try {
-//                            try {
-//                                selectedSpinner.put(String.valueOf(position),  stringArrayList.get(i));
-//                            } catch (JSONException e) {
-//                                Log.e("errnos ontextchanged", e.toString());
-//                            }
-//                        }catch (Exception error){
-//                            Log.e("errnos", error.toString());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//                    }
-//                });
 
             }
 
@@ -182,6 +140,14 @@ public class SameProductListAdapter extends BaseAdapter {
             Log.e("errnos_teamada", error.toString());
         }
         return convertView;
+    }
+
+    public ArrayList<Button> getAdd_button_list() {
+        return add_button_list;
+    }
+
+    public void add_button_to_button_list(Button button) {
+        this.add_button_list.add(button);
     }
 
     public static class PlayersViewHolder {

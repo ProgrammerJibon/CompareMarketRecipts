@@ -7,7 +7,7 @@
     tools:ignore="all">
 
     <ImageView
-        android:id="@+id/image_view_crop"
+        android:id="@+id/get_image_from_gallery_or_camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttons_1"

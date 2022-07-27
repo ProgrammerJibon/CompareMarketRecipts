@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,7 +42,7 @@ public class ProductsFromImage extends AppCompatActivity {
     TextRecognitionActivity textRecognitionActivity;
     RelativeLayout get_shop_name_rl_layout, add_shop_items_rl_layout;
     TextView shop_name_for_adding, shop_location_for_adding;
-    Button addingDone, addCustomProductButton;
+    Button addingDone, addCustomProductButton, add_all;
     Boolean periodForDecimal;
 
     @Override
@@ -64,6 +63,7 @@ public class ProductsFromImage extends AppCompatActivity {
         shop_location_for_adding = activity.findViewById(R.id.shop_location_for_adding);
         listViewForAddingItemsOnServer = activity.findViewById(R.id.show_related_products_listview);
         addingDone = activity.findViewById(R.id.addingdone);
+        add_all = activity.findViewById(R.id.add_all);
 
         textRecognitionActivity = new TextRecognitionActivity();
 
@@ -346,10 +346,19 @@ public class ProductsFromImage extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if (code == 200 && result != null) {
                     if (result.has("getSimilar")) {
-                        BaseAdapter baseAdapter = new SameProductListAdapter(activity, product_name_price_list, result.getJSONObject("getSimilar"), shop_id, shop_name);
+                        SameProductListAdapter baseAdapter = new SameProductListAdapter(activity, product_name_price_list, result.getJSONObject("getSimilar"), shop_id, shop_name);
                         listViewForAddingItemsOnServer.setAdapter(baseAdapter);
                         listViewForAddingItemsOnServer.setItemsCanFocus(true);
-
+                        add_all.setOnClickListener(view -> {
+                            try {
+                                ArrayList<Button> buttonArrayList = baseAdapter.getAdd_button_list();
+                                for (Button button : buttonArrayList) {
+                                    button.callOnClick();
+                                }
+                            } catch (Exception e) {
+                                Log.e("errnos", e.toString());
+                            }
+                        });
                     }
                 }
             } catch (Exception e) {

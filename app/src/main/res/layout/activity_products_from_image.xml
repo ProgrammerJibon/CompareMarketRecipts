@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:visibility="gone"
         android:background="@color/halka_kala"
+        android:visibility="gone"
         android:layout_alignParentBottom="true">
 
         <TextView
@@ -71,7 +71,7 @@
             android:id="@+id/rand2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/addingdone"
+            android:layout_above="@+id/buttons_for_adall_next"
             android:gravity="center_vertical"
             android:paddingHorizontal="8dp"
             android:background="@color/halka_sada"
@@ -113,13 +113,32 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/addingdone"
+        <LinearLayout
+            android:id="@+id/buttons_for_adall_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
-            android:text="Done" />
+            android:background="@color/halka_kala"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/addingdone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="Done" />
+
+            <Button
+                android:id="@+id/add_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="Add All" />
+        </LinearLayout>
+
     </RelativeLayout>
 
     <RelativeLayout

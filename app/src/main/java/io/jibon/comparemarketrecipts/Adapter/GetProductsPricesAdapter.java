@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.multidex.BuildConfig;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
@@ -211,7 +212,13 @@ public class GetProductsPricesAdapter extends BaseAdapter {
             if (isShowAds()) {
 
                 MobileAds.initialize(activity);
-                AdLoader adLoader = new AdLoader.Builder(activity, "ca-app-pub-6695709429891253/9897159758") //ca-app-pub-3940256099942544/2247696110
+                String adUnitId = "";
+                if (BuildConfig.DEBUG) {
+                    adUnitId = "ca-app-pub-3940256099942544/2247696110"; //test ad unit id
+                } else {
+                    adUnitId = "ca-app-pub-6695709429891253/9897159758"; //my ad unit id
+                }
+                AdLoader adLoader = new AdLoader.Builder(activity, adUnitId)
                         .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
                             @Override
                             public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
