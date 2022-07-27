@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.multidex.BuildConfig;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
@@ -29,6 +28,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.jibon.comparemarketrecipts.BuildConfig;
 import io.jibon.comparemarketrecipts.R;
 
 public class GetProductsPricesAdapter extends BaseAdapter {
