@@ -24,8 +24,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import io.jibon.comparemarketrecipts.CustomTools;
 import io.jibon.comparemarketrecipts.R;
-import io.jibon.comparemarketrecipts.Settings;
 
 public class SameProductListAdapter extends BaseAdapter {
     public ArrayList<ArrayList> arrayList;
@@ -127,7 +127,7 @@ public class SameProductListAdapter extends BaseAdapter {
                         gridview_for_similar_data_types_price.setFocusable(false);
                         gridview_for_similar_data_types.setClickable(false);
                         gridview_for_similar_data_types.setEnabled(false);
-                        new Settings(activity).addItemsPricesOfCity(progressBar, shop_id, stringArrayList.get(gridview_for_similar_data_types.getSelectedItemPosition()), String.valueOf(gridview_for_similar_data_types_price.getText()), shop_name, finalConvertView);
+                        new CustomTools(activity).addItemsPricesOfCity(progressBar, shop_id, stringArrayList.get(gridview_for_similar_data_types.getSelectedItemPosition()), String.valueOf(gridview_for_similar_data_types_price.getText()), shop_name, finalConvertView);
                     } catch (Exception error) {
                         Log.e("errnos add button cliker", error.toString());
                     }

@@ -33,7 +33,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
             if (this.taskListener != null) {
                 if (result.has("error")) {
                     String versionName = BuildConfig.VERSION_NAME;
-                    new Settings(context).toast(versionName + " - " + result.getString("error"), R.drawable.ic_baseline_clear_24);
+                    new CustomTools(context).toast(result.getString("error"), R.drawable.ic_baseline_clear_24);
                 }
                 this.taskListener.onFinished(code, result);
             }
@@ -75,7 +75,7 @@ public class Internet2 extends AsyncTask<Void, Void, JSONObject> {
             JSONObject jsonObject = new JSONObject(allLines);
             return jsonObject;
         } catch (Exception e) {
-            new Settings(context).toast("Unnable to connect...", R.drawable.ic_baseline_clear_24);
+            new CustomTools(context).toast("Unnable to connect...", R.drawable.ic_baseline_clear_24);
             Log.e("errnos", this.url + " - Internet2 error:" + e);
             return null;
         }

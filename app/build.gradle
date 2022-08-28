@@ -1,10 +1,10 @@
-
 plugins {
     id 'com.android.application'
 }
 
-final BUILD_DATE = new Date().format('yyyyMM.ddHHmm')
-final int TIMESTAMP = new Date().getTime()
+String BUILD_DATE = new Date().format('yyyyMM.ddHHmm')
+int TIMESTAMP = System.currentTimeMillis() / 1000
+
 
 android {
     compileSdk 32

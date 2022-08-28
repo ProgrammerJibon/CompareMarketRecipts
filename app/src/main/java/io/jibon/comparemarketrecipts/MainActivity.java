@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -17,8 +19,8 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +31,11 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 
@@ -47,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
     public TabLayout tabLayoutMainActivity;
     public ViewPager2 viewPager2;
     public Integer pageNumber = -1;
-    private AdView mAdView1;
-
     String[] permissions = {
             Manifest.permission.CAMERA,
             Manifest.permission.INTERNET,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.VIBRATE
+            Manifest.permission.VIBRATE,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED
     };
+    private LinearLayout adViewContainer;
     int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 255;
 
     @Override
@@ -65,19 +70,40 @@ public class MainActivity extends AppCompatActivity {
         //find blocks
         tabLayoutMainActivity = activity.findViewById(R.id.home_tab_layout);
         viewPager2 = activity.findViewById(R.id.home_view_pager);
-        mAdView1 = activity.findViewById(R.id.adView1);
+        adViewContainer = activity.findViewById(R.id.adView1);
+        String AD_UNIT_ID = "";
+        if (BuildConfig.DEBUG) {
+            AD_UNIT_ID = ("ca-app-pub-3940256099942544/6300978111");//test ad unit id
+        } else {
+            AD_UNIT_ID = ("ca-app-pub-6695709429891253/5553013652");//my ad unit id
+        }
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.FULL_BANNER);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.e("errnos", loadAdError.getMessage());
+            }
+        });
+        mAdView.setAdUnitId(AD_UNIT_ID);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        MobileAds.initialize(this, initializationStatus -> {
+
+        });
+        adViewContainer.removeAllViews();
+        adViewContainer.removeAllViewsInLayout();
+        adViewContainer.addView(mAdView);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             pageNumber = extras.getInt("pageNumber");
         }
 
-        MobileAds.initialize(this, initializationStatus -> {
 
-        });
+        Bitmap bitmap1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.logo);
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView1.loadAd(adRequest);
 
 
         run();
@@ -114,13 +140,13 @@ public class MainActivity extends AppCompatActivity {
                     "<br>Contact: <a href='tel:+3914000000'>+3914000000</a>, " +
                     "<a href='mailto:info@miorispermio.com'>info@miorispermio.com</a>" +
                     "<br>Web: <a href='https://miorispermio.com/'>www.miorispermio.com</a>" +
-                    "<br><br>Developed by: <a href='https://www.freelancer.com/u/ProgrammerJibon'>MD. Jibon Howlader</a>" +
-                    "<br>Copyright info: " +
+                    "<br><br>Developed by: <a href='https://www.freelancer.com/u/ProgrammerJibon'>MD. Jibon Howlader</a> " + "(ProgrammerJibon)" +
+                    "<br>Contact: " +
                     "<a href='https://www.freelancer.com/u/ProgrammerJibon'>Freelancer</a>, " +
                     "<a href='https://www.instagram.com/programmerjibon/'>Instagram</a>, " +
                     "<a href='https://www.linkedin.com/in/programmerjibon/'>Linkedin</a>, " +
                     "<a href='mailto:mail@jibon.io'>Email</a>" +
-                    "<br>Website: <a href='https://jibon.io/'>www.jibon.io</a>" +
+                    "<br>Website: <a href='https://jibon.io/'>www.jibon.io</a> & <a href='https://www.jibon.io/LICENSE'>LICENSE</a>" +
                     "<br>Google Verified Developer Id: <a href='https://g.dev/ProgrammerJibon'>GDEV#ProgrammerJibon</a>" +
                     "</i></small><br><br>";
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -198,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(activity, "Running in background...", Toast.LENGTH_LONG).show();
         startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));
     }
 
@@ -234,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Permission needed!");
             builder.setMessage("App need permission to read contacts");
-            builder.setPositiveButton("Settings", (dialogInterface, i1) -> {
+            builder.setPositiveButton("CustomTools", (dialogInterface, i1) -> {
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", activity.getPackageName(), null);

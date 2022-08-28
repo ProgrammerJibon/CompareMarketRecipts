@@ -27,9 +27,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import io.jibon.comparemarketrecipts.Adapter.GetProductsPricesAdapter;
+import io.jibon.comparemarketrecipts.CustomTools;
 import io.jibon.comparemarketrecipts.Internet2;
 import io.jibon.comparemarketrecipts.R;
-import io.jibon.comparemarketrecipts.Settings;
 
 @SuppressLint("SetTextI18n")
 public class ShowPrices extends Fragment {
@@ -108,7 +108,7 @@ public class ShowPrices extends Fragment {
         });
 
         try {
-            JSONObject countries_states = new Settings(activity).countries_states();
+            JSONObject countries_states = new CustomTools(activity).countries_states();
             if (countries_states.has("countries")) {
                 JSONArray countries = countries_states.getJSONArray("countries");
                 ArrayList<String> countries_names = new ArrayList<>();
@@ -119,13 +119,13 @@ public class ShowPrices extends Fragment {
                 ArrayAdapter<String> countryArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, countries_names);
                 countrySelector.setAdapter(countryArrayAdapter);
 
-                countrySelector.setSelection(new Settings(activity).setPrefId("country_id", null));
+                countrySelector.setSelection(new CustomTools(activity).setPrefId("country_id", null));
 
                 countrySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                         try {
-                            new Settings(activity).setPrefId("country_id", position);
+                            new CustomTools(activity).setPrefId("country_id", position);
                             int shop_country_id = -1;
                             if (position != 0) {
                                 selectedCountry = countries.getJSONObject(position - 1).getString("name");
@@ -144,14 +144,14 @@ public class ShowPrices extends Fragment {
                             }
                             ArrayAdapter<String> cityArrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, states_names);
                             citySelector.setAdapter(cityArrayAdapter);
-                            citySelector.setSelection(new Settings(activity).setPrefId("city_id" + position, null));
+                            citySelector.setSelection(new CustomTools(activity).setPrefId("city_id" + position, null));
 
                             citySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                     try {
                                         if (i != 0) {
-                                            new Settings(activity).setPrefId("city_id" + position, i);
+                                            new CustomTools(activity).setPrefId("city_id" + position, i);
                                             selectedCity = states_names.get(i);
 
                                         } else {
@@ -189,7 +189,7 @@ public class ShowPrices extends Fragment {
 
     private void updatePriceListAdapter() {
         progressBar.setVisibility(View.VISIBLE);
-        String url = new Settings(activity).linkForJson("comparemarketrecipts.php?getProductsPrices=" + byYou + "&city=" + selectedCity + "&country=" + selectedCountry + "&search=" + searchedItem);
+        String url = new CustomTools(activity).linkForJson("comparemarketrecipts.php?getProductsPrices=" + byYou + "&city=" + selectedCity + "&country=" + selectedCountry + "&search=" + searchedItem);
         new Internet2(activity, url, (code, result) -> {
             try {
                 progressBar.setVisibility(View.GONE);

@@ -68,12 +68,12 @@ public class ProductsFromImage extends AppCompatActivity {
         textRecognitionActivity = new TextRecognitionActivity();
 
         addCustomProductButton.setOnClickListener(v -> {
-            new Settings(activity);
+            new CustomTools(activity);
             String product = addCustomProductName.getText().toString(), price = addCustomProductPrice.getText().toString();
             product = product.replaceAll("[^A-Za-z\\s]+", "").trim().replaceAll(" +", " ");
             price = price.replaceAll("[^0-9\\.]+", "").trim().replaceAll(" +", " ");
             if (!product.equals("") && !price.equals("")) {
-                new Settings(activity).addItemsPricesOfCity(editTextShopNameChangerLoading, shop_id, product, price, shop_name, null);
+                new CustomTools(activity).addItemsPricesOfCity(editTextShopNameChangerLoading, shop_id, product, price, shop_name, null);
                 addCustomProductName.setText("");
                 addCustomProductPrice.setText("");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -184,7 +184,7 @@ public class ProductsFromImage extends AppCompatActivity {
 
     public void editTextInputOnchange(String editable, ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
-        String link = new Settings(activity).linkForJson("comparemarketrecipts.php?getAllShopName=1&shop_name=" + editable.toString());
+        String link = new CustomTools(activity).linkForJson("comparemarketrecipts.php?getAllShopName=1&shop_name=" + editable.toString());
         Internet2 task = new Internet2(activity, link, (code, result) -> {
             try {
                 progressBar.setVisibility(View.GONE);
@@ -223,9 +223,9 @@ public class ProductsFromImage extends AppCompatActivity {
                                     try {
                                         if (getAllShopName.getJSONObject(position).getInt("id") == 0) {
                                             if (editable.length() < 3) {
-                                                new Settings(activity).toast("Please enter a valid name", null);
+                                                new CustomTools(activity).toast("Please enter a valid name", null);
                                             } else {
-                                                JSONObject countries_states = new Settings(activity).countries_states();
+                                                JSONObject countries_states = new CustomTools(activity).countries_states();
                                                 if (countries_states.has("countries")) {
                                                     JSONArray countries = countries_states.getJSONArray("countries");
                                                     List<String> countries_names = new ArrayList<>();
@@ -251,7 +251,7 @@ public class ProductsFromImage extends AppCompatActivity {
                                                             builder2.setItems(states_list, (dialog2, which2) -> {
                                                                 try {
                                                                     progressBar.setVisibility(View.VISIBLE);
-                                                                    String link = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(countries_names.get(which)) + "&city=" + URLEncoder.encode(states_names.get(which2)));
+                                                                    String link = new CustomTools(activity).linkForJson("comparemarketrecipts.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(countries_names.get(which)) + "&city=" + URLEncoder.encode(states_names.get(which2)));
                                                                     Internet2 task = new Internet2(activity, link, (code, result) -> {
                                                                         progressBar.setVisibility(View.GONE);
                                                                         try {
@@ -260,13 +260,13 @@ public class ProductsFromImage extends AppCompatActivity {
                                                                                 shop_city_name = states_names.get(which2);
                                                                                 shop_name = editable.toString();
                                                                                 shop_id = result.getString("addShopName");
-                                                                                new Settings(activity).toast(editable + " added succesfully", R.drawable.ic_baseline_done_24);
+                                                                                new CustomTools(activity).toast(editable + " added succesfully", R.drawable.ic_baseline_done_24);
                                                                             } else {
-                                                                                new Settings(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
+                                                                                new CustomTools(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
                                                                             }
                                                                         } catch (Exception e) {
                                                                             Log.e("errnos", "country select error: " + e.toString());
-                                                                            new Settings(activity).toast(editable + " was not added\nPlease try again...", R.drawable.ic_baseline_clear_24);
+                                                                            new CustomTools(activity).toast(editable + " was not added\nPlease try again...", R.drawable.ic_baseline_clear_24);
                                                                         }
                                                                     });
                                                                     task.execute();
@@ -297,7 +297,7 @@ public class ProductsFromImage extends AppCompatActivity {
                                         add_shop_items_rl_layout.setVisibility(View.VISIBLE);
                                         getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
 //                                        progressBar.setVisibility(View.VISIBLE);
-//                                        String link3 = new Settings(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
+//                                        String link3 = new CustomTools(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
 //                                        Internet2 task3 = new Internet2(activity, link3, (code, result) -> {
 //                                            progressBar.setVisibility(View.GONE);
 //                                            try {
@@ -310,7 +310,7 @@ public class ProductsFromImage extends AppCompatActivity {
 //
 //
 //                                                } else {
-//                                                    new Settings(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
+//                                                    new CustomTools(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
 //                                                }
 //                                            } catch (Exception e) {
 //                                                e.printStackTrace();
@@ -340,7 +340,7 @@ public class ProductsFromImage extends AppCompatActivity {
         for (int i = 0; i < product_name_price_list.size(); i++) {
             procutsWithComma.append(product_name_price_list.get(i).get(0)).append(",");
         }
-        String link = new Settings(activity).linkForJson("comparemarketrecipts.php?getSimilar=" + URLEncoder.encode(procutsWithComma.toString()));
+        String link = new CustomTools(activity).linkForJson("comparemarketrecipts.php?getSimilar=" + URLEncoder.encode(procutsWithComma.toString()));
         Internet2 task = new Internet2(activity, link, (code, result) -> {
             try {
                 progressBar.setVisibility(View.GONE);

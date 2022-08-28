@@ -7,11 +7,18 @@
     android:background="@color/white"
     tools:ignore="all">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.05"
+        android:scaleType="centerCrop"
+        android:src="@drawable/istockphoto_1173579665_612x612" />
+
     <LinearLayout
         android:id="@+id/rand1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/secondary">
+        android:background="@color/primary">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rand1"
-        android:background="@color/halka_kala"
+        android:background="@color/secondary"
         android:orientation="horizontal">
 
         <TextView
@@ -62,20 +69,18 @@
         android:layout_below="@+id/info_table"
         android:clipToPadding="true" />
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:id="@+id/adView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/home_tab_layout"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-6695709429891253/5553013652" />
-    <!--ads:adUnitId="ca-app-pub-6695709429891253/7361468089"-->
+        android:layout_above="@id/home_tab_layout" />
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/home_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:tabIconTint="@color/gray"
         app:tabIndicatorColor="@color/secondary"
         app:tabRippleColor="@color/primary"

@@ -37,9 +37,9 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import java.util.ArrayList;
 
 import io.jibon.comparemarketrecipts.CropperActivity;
+import io.jibon.comparemarketrecipts.CustomTools;
 import io.jibon.comparemarketrecipts.ProductsFromImage;
 import io.jibon.comparemarketrecipts.R;
-import io.jibon.comparemarketrecipts.Settings;
 
 public class AddByImage extends Fragment {
 
@@ -402,11 +402,11 @@ public class AddByImage extends Fragment {
         builder.setMessage("What is equivalent of decimal in the picture?");
         builder.setPositiveButton("Comma", (dialogInterface, i) -> {
             periodForDecimal = false;
-            new Settings(activity).toast("Comma is set as decimal point for this image", null);
+            new CustomTools(activity).toast("Comma is set as decimal point for this image", null);
         });
         builder.setNegativeButton("Period", (dialogInterface, i) -> {
             periodForDecimal = true;
-            new Settings(activity).toast("Period or Dot is set as decimal point for this image", null);
+            new CustomTools(activity).toast("Period or Dot is set as decimal point for this image", null);
         });
         builder.setCancelable(false);
         builder.create().show();

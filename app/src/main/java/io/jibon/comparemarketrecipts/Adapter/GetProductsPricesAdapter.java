@@ -20,7 +20,6 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.nativead.NativeAd;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -219,17 +218,13 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                     adUnitId = "ca-app-pub-6695709429891253/9897159758"; //my ad unit id
                 }
                 AdLoader adLoader = new AdLoader.Builder(activity, adUnitId)
-                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                            @Override
-                            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
-                                NativeTemplateStyle styles = new
-                                        NativeTemplateStyle.Builder()
-                                        .withMainBackgroundColor(new ColorDrawable(activity.getColor(R.color.white)))
-                                        .build();
-                                getTemplateView().setStyles(styles);
-                                getTemplateView().setNativeAd(nativeAd);
-                            }
-
+                        .forNativeAd(nativeAd -> {
+                            NativeTemplateStyle styles = new
+                                    NativeTemplateStyle.Builder()
+                                    .withMainBackgroundColor(new ColorDrawable(activity.getColor(R.color.white)))
+                                    .build();
+                            getTemplateView().setStyles(styles);
+                            getTemplateView().setNativeAd(nativeAd);
                         })
                         .withAdListener(new AdListener() {
                             @Override

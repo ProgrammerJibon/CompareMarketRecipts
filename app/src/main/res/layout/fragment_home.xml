@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.AddByImage"
     tools:ignore="all">
-
     <ImageView
         android:id="@+id/get_image_from_gallery_or_camera"
         android:layout_width="match_parent"
