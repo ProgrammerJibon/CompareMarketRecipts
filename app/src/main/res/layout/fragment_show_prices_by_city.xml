@@ -41,13 +41,6 @@
         android:hint="Search for products"
         android:padding="16dp" />
 
-    <ListView
-        android:id="@+id/locationsProductsPrices_ShowPriceByCity"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/searchForProductName"
-        android:layout_alignParentBottom="true" />
-
     <LinearLayout
         android:id="@+id/nothingFoundForYourSearch"
         android:layout_width="match_parent"
@@ -71,6 +64,20 @@
             android:gravity="center"
             android:text="Nothing found for your search" />
     </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh_ShoPriceByCity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchForProductName"
+        android:layout_alignParentBottom="true">
+
+        <ListView
+            android:id="@+id/locationsProductsPrices_ShowPriceByCity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <ProgressBar
         android:id="@+id/progressBar"

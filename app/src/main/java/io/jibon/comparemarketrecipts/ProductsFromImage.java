@@ -2,7 +2,6 @@ package io.jibon.comparemarketrecipts;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -28,7 +27,6 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.jibon.comparemarketrecipts.Adapter.SameProductListAdapter;
 
@@ -44,6 +42,7 @@ public class ProductsFromImage extends AppCompatActivity {
     TextView shop_name_for_adding, shop_location_for_adding;
     Button addingDone, addCustomProductButton, add_all;
     Boolean periodForDecimal;
+    String set_pref_country = "Italy", set_pref_city = "Modena";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,11 @@ public class ProductsFromImage extends AppCompatActivity {
         listViewForAddingItemsOnServer = activity.findViewById(R.id.show_related_products_listview);
         addingDone = activity.findViewById(R.id.addingdone);
         add_all = activity.findViewById(R.id.add_all);
+
+
+        set_pref_country = new CustomTools(activity).setPref("country_name", null);
+        set_pref_city = new CustomTools(activity).setPref("city_name", null);
+
 
         textRecognitionActivity = new TextRecognitionActivity();
 
@@ -192,8 +196,8 @@ public class ProductsFromImage extends AppCompatActivity {
                     if (result.has("getAllShopName")) {
                         JSONArray getAllShopName = result.getJSONArray("getAllShopName");
                         String oneNewShopAddingButton = "{\"id\": \"0\",\n" +
-                                "      \"country\": \"Country\",\n" +
-                                "      \"city\": \"City\",\n" +
+                                "      \"country\": \"" + set_pref_country + "\",\n" +
+                                "      \"city\": \"" + set_pref_city + "\",\n" +
                                 "      \"shop_name\": \"Add " + editable + "\",\n" +
                                 "      \"time\": \"0\"}";
                         JSONObject jsonObject = new JSONObject(oneNewShopAddingButton);
@@ -225,98 +229,50 @@ public class ProductsFromImage extends AppCompatActivity {
                                             if (editable.length() < 3) {
                                                 new CustomTools(activity).toast("Please enter a valid name", null);
                                             } else {
-                                                JSONObject countries_states = new CustomTools(activity).countries_states();
-                                                if (countries_states.has("countries")) {
-                                                    JSONArray countries = countries_states.getJSONArray("countries");
-                                                    List<String> countries_names = new ArrayList<>();
-                                                    for (int i = 0; i < countries.length(); i++) {
-                                                        countries_names.add(countries.getJSONObject(i).getString("name"));
-                                                    }
-                                                    String[] countries_list = countries_names.toArray(new String[0]);
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                                    builder.setTitle("Select shop country");
-                                                    builder.setItems(countries_list, (dialog, which) -> {
+                                                try {
+                                                    progressBar.setVisibility(View.VISIBLE);
+                                                    String link = new CustomTools(activity).linkForJson("comparemarketrecipts.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(set_pref_country) + "&city=" + URLEncoder.encode(set_pref_city));
+                                                    Internet2 task = new Internet2(activity, link, (code, result) -> {
+                                                        progressBar.setVisibility(View.GONE);
                                                         try {
-                                                            Integer shop_country_id = countries.getJSONObject(which).getInt("id");
-                                                            JSONArray statesJSONArray = countries_states.getJSONArray("states");
-                                                            List<String> states_names = new ArrayList<>();
-                                                            for (int i = 0; i < statesJSONArray.length(); i++) {
-                                                                if (statesJSONArray.getJSONObject(i).getInt("country_id") == shop_country_id) {
-                                                                    states_names.add(statesJSONArray.getJSONObject(i).getString("name"));
-                                                                }
+                                                            if (result.has("addShopName")) {
+                                                                shop_country_name = set_pref_country;
+                                                                shop_city_name = set_pref_city;
+                                                                shop_name = editable.toString();
+                                                                shop_id = result.getString("addShopName");
+                                                                new CustomTools(activity).toast(editable + " added succesfully", R.drawable.ic_baseline_done_24);
+                                                                shop_name_for_adding.setText(shop_name);
+                                                                shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
+                                                                get_shop_name_rl_layout.setVisibility(View.GONE);
+                                                                add_shop_items_rl_layout.setVisibility(View.VISIBLE);
+                                                                getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
+                                                            } else {
+                                                                new CustomTools(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
                                                             }
-                                                            String[] states_list = states_names.toArray(new String[0]);
-                                                            AlertDialog.Builder builder2 = new AlertDialog.Builder(activity);
-                                                            builder2.setTitle("Select shop city");
-                                                            builder2.setItems(states_list, (dialog2, which2) -> {
-                                                                try {
-                                                                    progressBar.setVisibility(View.VISIBLE);
-                                                                    String link = new CustomTools(activity).linkForJson("comparemarketrecipts.php?addShopName=1&shop_name=" + URLEncoder.encode(editable) + "&country=" + URLEncoder.encode(countries_names.get(which)) + "&city=" + URLEncoder.encode(states_names.get(which2)));
-                                                                    Internet2 task = new Internet2(activity, link, (code, result) -> {
-                                                                        progressBar.setVisibility(View.GONE);
-                                                                        try {
-                                                                            if (result.has("addShopName")) {
-                                                                                shop_country_name = countries_names.get(which);
-                                                                                shop_city_name = states_names.get(which2);
-                                                                                shop_name = editable.toString();
-                                                                                shop_id = result.getString("addShopName");
-                                                                                new CustomTools(activity).toast(editable + " added succesfully", R.drawable.ic_baseline_done_24);
-                                                                            } else {
-                                                                                new CustomTools(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
-                                                                            }
-                                                                        } catch (Exception e) {
-                                                                            Log.e("errnos", "country select error: " + e.toString());
-                                                                            new CustomTools(activity).toast(editable + " was not added\nPlease try again...", R.drawable.ic_baseline_clear_24);
-                                                                        }
-                                                                    });
-                                                                    task.execute();
-                                                                } catch (Exception e) {
-                                                                    Log.e("errnos", "country select error: " + e.toString());
-                                                                }
-                                                            });
-                                                            builder2.setCancelable(false);
-                                                            builder2.show();
                                                         } catch (Exception e) {
                                                             Log.e("errnos", "country select error: " + e.toString());
+                                                            new CustomTools(activity).toast(editable + " was not added\nPlease try again...", R.drawable.ic_baseline_clear_24);
                                                         }
                                                     });
-                                                    builder.setCancelable(false);
-                                                    builder.show();
+                                                    task.execute();
+                                                } catch (Exception e) {
+                                                    Log.e("errnos", "country select error: " + e.toString());
                                                 }
-
                                             }
                                         } else {
                                             shop_name = getAllShopName.getJSONObject(position).getString("shop_name");
                                             shop_city_name = getAllShopName.getJSONObject(position).getString("city");
                                             shop_country_name = getAllShopName.getJSONObject(position).getString("country");
                                             shop_id = getAllShopName.getJSONObject(position).getString("id");
+
+                                            shop_name_for_adding.setText(shop_name);
+                                            shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
+                                            get_shop_name_rl_layout.setVisibility(View.GONE);
+                                            add_shop_items_rl_layout.setVisibility(View.VISIBLE);
+                                            getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
                                         }
-                                        shop_name_for_adding.setText(shop_name);
-                                        shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
-                                        get_shop_name_rl_layout.setVisibility(View.GONE);
-                                        add_shop_items_rl_layout.setVisibility(View.VISIBLE);
-                                        getSameDataListOfProductsNames(arrayList, listViewForAddingItemsOnServer, progressBar);
-//                                        progressBar.setVisibility(View.VISIBLE);
-//                                        String link3 = new CustomTools(activity).linkForJson("comparemarketrecipts.php?addShopId=" + URLEncoder.encode(shop_id));
-//                                        Internet2 task3 = new Internet2(activity, link3, (code, result) -> {
-//                                            progressBar.setVisibility(View.GONE);
-//                                            try {
-//                                                if (result.has("addShopId")) {
-//                                                    shop_name_for_adding.setText(shop_name);
-//                                                    shop_location_for_adding.setText(shop_city_name + ", " + shop_country_name);
-//                                                    addedShopId = result.getString("addShopId");
-//                                                    get_shop_name_rl_layout.setVisibility(View.GONE);
-//                                                    add_shop_items_rl_layout.setVisibility(View.VISIBLE);
-//
-//
-//                                                } else {
-//                                                    new CustomTools(activity).toast("Something went wrong\nPlease try again...", R.drawable.ic_baseline_clear_24);
-//                                                }
-//                                            } catch (Exception e) {
-//                                                e.printStackTrace();
-//                                            }
-//                                        });
-//                                        task3.execute();
+
+
                                     } catch (Exception e) {
                                         Log.e("errnos", "view1 onclick: " + e);
                                     }
@@ -354,6 +310,8 @@ public class ProductsFromImage extends AppCompatActivity {
                                 ArrayList<Button> buttonArrayList = baseAdapter.getAdd_button_list();
                                 for (Button button : buttonArrayList) {
                                     button.callOnClick();
+                                    button.setClickable(false);
+                                    button.setEnabled(false);
                                 }
                             } catch (Exception e) {
                                 Log.e("errnos", e.toString());

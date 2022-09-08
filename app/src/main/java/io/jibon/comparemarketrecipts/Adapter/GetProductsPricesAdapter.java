@@ -217,6 +217,7 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                 } else {
                     adUnitId = "ca-app-pub-6695709429891253/9897159758"; //my ad unit id
                 }
+                getTemplateView().setVisibility(View.VISIBLE);
                 AdLoader adLoader = new AdLoader.Builder(activity, adUnitId)
                         .forNativeAd(nativeAd -> {
                             NativeTemplateStyle styles = new
@@ -230,7 +231,6 @@ public class GetProductsPricesAdapter extends BaseAdapter {
                             @Override
                             public void onAdLoaded() {
                                 super.onAdLoaded();
-                                getTemplateView().setVisibility(View.VISIBLE);
                             }
 
                             @Override

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.AddByImage"
     tools:ignore="all">
+
     <ImageView
         android:id="@+id/get_image_from_gallery_or_camera"
         android:layout_width="match_parent"
@@ -17,6 +18,19 @@
         android:src="@drawable/ic_baseline_add_circle_outline_24"
         android:tint="#33000000" />
 
+    <ImageButton
+        android:id="@+id/raw_text"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/gray"
+        android:padding="16dp"
+        android:src="@drawable/ic_baseline_text_fields_24"
+        android:tint="@color/white"
+        android:visibility="gone" />
+
 
     <LinearLayout
         android:id="@+id/buttons_1"
@@ -24,6 +38,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/deci_equiv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,6 +68,7 @@
                 android:text="Crop"
                 android:visibility="gone" />
 
+
             <Button
                 android:id="@+id/button_next"
                 android:layout_width="0dp"
@@ -58,6 +79,7 @@
                 android:backgroundTint="@color/gray"
                 android:padding="16dp"
                 android:text="Next" />
+
         </LinearLayout>
     </LinearLayout>
 

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import io.jibon.comparemarketrecipts.CropperActivity;
 import io.jibon.comparemarketrecipts.CustomTools;
@@ -49,10 +51,11 @@ public class AddByImage extends Fragment {
     ActivityResultLauncher<String> mGetContent1;
     Uri selected_image_uri, dest_uri;
     Bitmap selected_image_bitmap;
-    TextView mainActivityTitle;
+    TextView mainActivityTitle, deci_equiv_text;
     String pageTitle;
     Boolean periodForDecimal = true;
     RelativeLayout show_how_to_crop;
+    ImageButton raw_text;
 
     ArrayList<String> productsXXX = new ArrayList();
     ArrayList<String> priceXXX = new ArrayList();
@@ -103,6 +106,8 @@ public class AddByImage extends Fragment {
         button_recrop = viewFragments.findViewById(R.id.button_recrop);
         goForCropOkayButton = viewFragments.findViewById(R.id.goForCropOkayButton);
         show_how_to_crop = viewFragments.findViewById(R.id.show_how_to_crop);
+        deci_equiv_text = viewFragments.findViewById(R.id.deci_equiv_text);
+        raw_text = viewFragments.findViewById(R.id.raw_text);
 
         // set startup values
         pageTitle = ("Scan receipts");
@@ -114,15 +119,26 @@ public class AddByImage extends Fragment {
                 cropperActivity(selected_image_uri);
             }
         });
-
+//raw_text.setVisibility(View.VISIBLE);
+//            String finalLines = lines;
+//            raw_text.setOnClickListener(view -> {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//                builder.setCancelable(true)
+//                        .setPositiveButton("Close", (dialogInterface, i) -> dialogInterface.cancel())
+//                        .setMessage(finalLines)
+//                        .setTitle("Image Raw Text");
+//                builder.create();
+//                builder.show();
+//            });
         button_next.setOnClickListener(view -> {
             if (selected_image_uri == null) {
                 Toast.makeText(activity, "Please select an image first...", Toast.LENGTH_LONG).show();
-            }else{
+            } else {
                 try {
                     selected_image_bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selected_image_uri);
                     String textFromImage = "";
-                    priceXXX = new ArrayList<>(); productsXXX = new ArrayList<>();
+                    priceXXX = new ArrayList<>();
+                    productsXXX = new ArrayList<>();
                     if (getTextFromImage(selected_image_bitmap)) {
                         for (int priceIndex = 0; priceIndex < productsXXX.size(); priceIndex++) {
                             if (priceIndex >= productsXXX.size()) {
@@ -133,9 +149,6 @@ public class AddByImage extends Fragment {
                             }
                         }
                     }
-
-//                    Log.e("errnos",productsXXX.toString());
-//                    Log.e("errnos",textFromImage);
                     if (!textFromImage.equals("")) {
                         Intent intent = new Intent(activity, ProductsFromImage.class);
                         intent.putExtra("AllTextFromImage", textFromImage);
@@ -186,14 +199,19 @@ public class AddByImage extends Fragment {
     }
 
     public void cropperActivity(Uri image_uri) {
+        goForCropOkayButton.setOnClickListener(view -> {
+            show_how_to_crop.setVisibility(View.GONE);
+            Intent intent = new Intent(activity, CropperActivity.class);
+            intent.putExtra("IMG_URI", image_uri);
+            startActivityForResult(intent, 10118);
+        });
         if (image_uri != null) {
-            show_how_to_crop.setVisibility(View.VISIBLE);
-            goForCropOkayButton.setOnClickListener(view -> {
-                show_how_to_crop.setVisibility(View.GONE);
-                Intent intent = new Intent(activity, CropperActivity.class);
-                intent.putExtra("IMG_URI", image_uri);
-                startActivityForResult(intent, 10118);
-            });
+            if (((Integer) new CustomTools(activity).setPrefId("show_how_to_crop", null)).equals(0)) {
+                show_how_to_crop.setVisibility(View.VISIBLE);
+                new CustomTools(activity).setPrefId("show_how_to_crop", 1);
+            } else {
+                goForCropOkayButton.callOnClick();
+            }
         }
     }
 
@@ -214,7 +232,7 @@ public class AddByImage extends Fragment {
                 blocks = blocks + tBlock.getValue() + "\n\n";
                 for (Text line : tBlock.getComponents()) {
                     //extract scanned text lines here
-                    if (!line.getValue().endsWith("%") && !line.getValue().startsWith("j ")) {
+                    if (!line.getValue().endsWith("%") && !line.getValue().startsWith("j ") && !(line.getValue().toLowerCase()).contains("prezz")) {
                         lines = lines + line.getValue() + "\n";
                     }
                     for (Text element : line.getComponents()) {
@@ -226,6 +244,7 @@ public class AddByImage extends Fragment {
                     words = words + "\n";
                 }
             }
+//            Log.e("errnos", lines);
             lines = lines.replace("$", "");
             lines = lines.replace("€", "");
             String products = lines.toLowerCase();
@@ -394,22 +413,34 @@ public class AddByImage extends Fragment {
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     public  void imageCropped(Uri image_uri) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Choose one");
-        builder.setMessage("What is equivalent of decimal in the picture?");
-        builder.setPositiveButton("Comma", (dialogInterface, i) -> {
-            periodForDecimal = false;
-            new CustomTools(activity).toast("Comma is set as decimal point for this image", null);
-        });
-        builder.setNegativeButton("Period", (dialogInterface, i) -> {
+
+        String deci_equiv = new CustomTools(activity).setPref("deci_equiv", null);
+        if (Objects.equals(deci_equiv, "dot")) {
             periodForDecimal = true;
-            new CustomTools(activity).toast("Period or Dot is set as decimal point for this image", null);
-        });
-        builder.setCancelable(false);
-        builder.create().show();
+            deci_equiv_text.setText("Dot is default Decimal Equivalent");
+        } else if (Objects.equals(deci_equiv, "comma")) {
+            periodForDecimal = false;
+            deci_equiv_text.setText("Comma is default Decimal Equivalent");
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("Choose one");
+            builder.setMessage("What is equivalent of decimal in the picture?");
+            builder.setPositiveButton("Comma", (dialogInterface, i) -> {
+                periodForDecimal = false;
+                deci_equiv_text.setText("Comma is default Decimal Equivalent");
+            });
+            builder.setNegativeButton("Period", (dialogInterface, i) -> {
+                periodForDecimal = true;
+                deci_equiv_text.setText("Dot is default Decimal Equivalent");
+            });
+            builder.setCancelable(false);
+            builder.create().show();
+        }
+
+
         if (image_uri == null) {
             Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show();
             button_recrop.setVisibility(View.GONE);

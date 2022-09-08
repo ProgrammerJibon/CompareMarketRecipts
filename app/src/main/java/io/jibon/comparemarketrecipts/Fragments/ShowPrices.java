@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ public class ShowPrices extends Fragment {
     ProgressBar progressBar;
     ListView locationsProductsPrices_ShowPriceByCity;
     EditText searchForProductName;
+    SwipeRefreshLayout swiperefresh_ShoPriceByCity;
 
     public ShowPrices(boolean byYou) {
         this.byYou = byYou;
@@ -78,6 +80,7 @@ public class ShowPrices extends Fragment {
         progressBar = showPricesByCityView.findViewById(R.id.progressBar);
         locationsProductsPrices_ShowPriceByCity = showPricesByCityView.findViewById(R.id.locationsProductsPrices_ShowPriceByCity);
         searchForProductName = showPricesByCityView.findViewById(R.id.searchForProductName);
+        swiperefresh_ShoPriceByCity = showPricesByCityView.findViewById(R.id.swiperefresh_ShoPriceByCity);
 
 
         // set startup values
@@ -107,6 +110,8 @@ public class ShowPrices extends Fragment {
             }
         });
 
+        swiperefresh_ShoPriceByCity.setOnRefreshListener(() -> updatePriceListAdapter());
+
         try {
             JSONObject countries_states = new CustomTools(activity).countries_states();
             if (countries_states.has("countries")) {
@@ -125,7 +130,6 @@ public class ShowPrices extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                         try {
-                            new CustomTools(activity).setPrefId("country_id", position);
                             int shop_country_id = -1;
                             if (position != 0) {
                                 selectedCountry = countries.getJSONObject(position - 1).getString("name");
@@ -151,7 +155,6 @@ public class ShowPrices extends Fragment {
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                     try {
                                         if (i != 0) {
-                                            new CustomTools(activity).setPrefId("city_id" + position, i);
                                             selectedCity = states_names.get(i);
 
                                         } else {
@@ -192,6 +195,7 @@ public class ShowPrices extends Fragment {
         String url = new CustomTools(activity).linkForJson("comparemarketrecipts.php?getProductsPrices=" + byYou + "&city=" + selectedCity + "&country=" + selectedCountry + "&search=" + searchedItem);
         new Internet2(activity, url, (code, result) -> {
             try {
+                swiperefresh_ShoPriceByCity.setRefreshing(false);
                 progressBar.setVisibility(View.GONE);
                 nothingFoundForYourSearch.setVisibility(View.GONE);
                 if (code == 200 && result != null) {
@@ -204,6 +208,8 @@ public class ShowPrices extends Fragment {
                     } else {
                         nothingFoundForYourSearch.setVisibility(View.VISIBLE);
                     }
+                } else {
+                    new CustomTools(activity).toast("Network error!", R.drawable.ic_baseline_error_outline_24);
                 }
             } catch (Exception e) {
                 Log.e("errnos", e.toString());

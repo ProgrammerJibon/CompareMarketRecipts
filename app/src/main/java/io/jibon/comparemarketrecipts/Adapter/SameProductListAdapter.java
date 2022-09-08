@@ -123,7 +123,9 @@ public class SameProductListAdapter extends BaseAdapter {
                 View finalConvertView = convertView;
                 gridview_for_similar_data_types_price_add_button.setOnClickListener(view -> {
                     try {
+                        gridview_for_similar_data_types_price_add_button.setOnClickListener(null);
                         gridview_for_similar_data_types_price_add_button.setClickable(false);
+                        gridview_for_similar_data_types_price_add_button.setEnabled(false);
                         gridview_for_similar_data_types_price.setFocusable(false);
                         gridview_for_similar_data_types.setClickable(false);
                         gridview_for_similar_data_types.setEnabled(false);

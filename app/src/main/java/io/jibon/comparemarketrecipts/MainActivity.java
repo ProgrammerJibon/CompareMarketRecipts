@@ -6,21 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,9 +32,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 import io.jibon.comparemarketrecipts.Fragments.AddByImage;
@@ -65,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
+        new CustomTools(activity).setPref("nightMode", "false");
+        new CustomTools(activity).setVisualMode();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //find blocks
@@ -102,65 +95,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Bitmap bitmap1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.logo);
-
-
-
         run();
 
-        String installTime = null, updateTime = null;
-
-        try {
-            PackageManager pm = activity.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(activity.getPackageName(), 0);
-
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            installTime = dateFormat.format(new Date(pi.firstInstallTime));
-            updateTime = dateFormat.format(new Date(pi.lastUpdateTime));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        String finalInstallTime = installTime;
-        String finalUpdateTime = updateTime;
+        activity.findViewById(R.id.app_info).setOnLongClickListener(view -> {
+            Toast.makeText(activity, "Thanks for using our app :)", Toast.LENGTH_LONG).show();
+            System.exit(1);
+            finish();
+            return true;
+        });
         activity.findViewById(R.id.app_info).setOnClickListener(view -> {
-            String html = activity.getString(R.string.app_name) + " is an open AI platform which allows users to upload their market receipts to our server and add the products name and their prices from the receipt to the Market Store page." +
-                    "<br><br>This app will allow other users to see the prices by searching their <i>country</i> and <i>city</i> name." +
-                    "<br><br>This app will help others by adding your bought details and other user will determine the current price of their shop and can go for shopping mind freely with their budget. " +
-                    "<br><small>" +
-                    "<br>App Name: " + activity.getString(R.string.app_name) +
-                    "<br>App Version Name: " + BuildConfig.VERSION_NAME +
-                    "<br>App Version Code: " + BuildConfig.VERSION_CODE +
-                    "<br>Install Time: " + finalInstallTime +
-                    "<br>Update Time: " + finalUpdateTime +
-                    "<br>APK Name: " + activity.getPackageName() +
-                    "<br><i>" +
-                    "<br>Powered and owned by: <a href='#'>Giovanni Presti</a>" +
-                    "<br>Contact: <a href='tel:+3914000000'>+3914000000</a>, " +
-                    "<a href='mailto:info@miorispermio.com'>info@miorispermio.com</a>" +
-                    "<br>Web: <a href='https://miorispermio.com/'>www.miorispermio.com</a>" +
-                    "<br><br>Developed by: <a href='https://www.freelancer.com/u/ProgrammerJibon'>MD. Jibon Howlader</a> " + "(ProgrammerJibon)" +
-                    "<br>Contact: " +
-                    "<a href='https://www.freelancer.com/u/ProgrammerJibon'>Freelancer</a>, " +
-                    "<a href='https://www.instagram.com/programmerjibon/'>Instagram</a>, " +
-                    "<a href='https://www.linkedin.com/in/programmerjibon/'>Linkedin</a>, " +
-                    "<a href='mailto:mail@jibon.io'>Email</a>" +
-                    "<br>Website: <a href='https://jibon.io/'>www.jibon.io</a> & <a href='https://www.jibon.io/LICENSE'>LICENSE</a>" +
-                    "<br>Google Verified Developer Id: <a href='https://g.dev/ProgrammerJibon'>GDEV#ProgrammerJibon</a>" +
-                    "</i></small><br><br>";
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("About App")
-                    .setIcon(R.drawable.ic_baseline_info_24)
-                    .setMessage(Html.fromHtml(html))
-                    .setPositiveButton("Close", (dialogInterface, i) -> dialogInterface.cancel());
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-            ImageView imageView = dialog.findViewById(android.R.id.icon);
-            if (imageView != null) {
-                imageView.setColorFilter(Color.parseColor("#e0e0e0"), android.graphics.PorterDuff.Mode.SRC_IN);
-            }
+            Intent intent = new Intent(activity, AppSettings.class);
+            activity.startActivity(intent);
         });
     }
 

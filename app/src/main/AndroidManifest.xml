@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:windowSoftInputMode="adjustPan"
-    package="io.jibon.comparemarketrecipts">
+    package="io.jibon.comparemarketrecipts"
+    android:windowSoftInputMode="adjustPan">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
@@ -15,21 +15,26 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CompareMarketRecipts"
         android:usesCleartextTraffic="true"
-        android:hardwareAccelerated="true"
         tools:targetApi="31">
+        <activity
+            android:name=".AppSettings"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6695709429891253~1179203113" />
-        <!--<meta-data
+        <!--
+<meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6695709429891253~1179203113" />-->
-
+            android:value="ca-app-pub-6695709429891253~1179203113" />
+        -->
         <activity
             android:name=".ProductsFromImage"
             android:exported="false" />
