@@ -64,6 +64,8 @@ public class AppSettings extends AppCompatActivity {
                         .setPositiveButton("Exit", (dialogInterface, i) -> {
                             Toast.makeText(activity, "Thanks for using our app :)", Toast.LENGTH_LONG).show();
                             dialogInterface.cancel();
+                            activity.finishAffinity();
+                            finishAndRemoveTask();
                             System.exit(1);
                             finish();
                         })

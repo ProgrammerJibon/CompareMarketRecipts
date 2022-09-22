@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         activity.findViewById(R.id.app_info).setOnLongClickListener(view -> {
             Toast.makeText(activity, "Thanks for using our app :)", Toast.LENGTH_LONG).show();
             System.exit(1);
+            activity.finishAffinity();
+            finishAndRemoveTask();
+            System.exit(1);
             finish();
             return true;
         });
